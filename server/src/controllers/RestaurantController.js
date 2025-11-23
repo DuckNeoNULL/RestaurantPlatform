@@ -72,16 +72,20 @@ class RestaurantController {
 
   static async changeRestaurantStatus(req, res) {
     try {
-      const success = await RestaurantService.changeRestaurantStatus(
-        req.params.id
-      );
-      if (!success)
+      const id = req.params.id;
+      console.log(`[RestaurantController] changeRestaurantStatus called for id=${id}`);
+      const success = await RestaurantService.changeRestaurantStatus(id);
+      console.log(`[RestaurantController] changeRestaurantStatus result for id=${id}:`, success);
+      if (!success) {
         return res.status(404).json({ message: "Restaurant not found" });
-      res.status(201).end();
+      }
+      // Return a JSON body so client can parse response easily
+      return res.status(200).json({ success: true, restaurantID: id });
     } catch (err) {
-      res
+      console.error("[RestaurantController] Error in changeRestaurantStatus:", err);
+      return res
         .status(500)
-        .json({ message: "Error deleting restaurant", error: err.message });
+        .json({ message: "Error toggling restaurant status", error: err.message, stack: err.stack });
     }
   }
 
@@ -108,40 +112,20 @@ class RestaurantController {
     }
   }
 
-  // ✅ SEARCH FIXED: Map tables → capacity + decode + parse safely
-  static async search(req, res) {
-    try {
-      const query = { ...req.query };
+  static async search(req,res){
+    try{
+      const  {location,capacity,date,minPrice,maxPrice} = req.query;
 
-      // Decode các trường có thể bị encode URL
-      query.location = decodeURIComponent(query.location || "");
-      query.eventType = decodeURIComponent(query.eventType || "");
-
-      // Chuyển đổi kiểu dữ liệu
-      query.date = query.date || null;
-      query.minPrice = query.minPrice ? Number(query.minPrice) : null;
-      query.maxPrice = query.maxPrice ? Number(query.maxPrice) : null;
-
-      // ✅ Fix chính: tables -> capacity
-      if (query.tables) {
-        query.capacity = Number(query.tables);
-      } else if (!query.capacity) {
-        query.capacity = null;
-      }
-
-      // Xóa tables cũ để tránh gây nhiễu
-      delete query.tables;
-
-      console.log("🔍 Search filters received:", query);
-
-      const data = await RestaurantService.search(query);
-      res.json(data);
-    } catch (err) {
-      console.error("❌ Error in RestaurantController.search:", err);
-      res.status(500).json({
-        message: "Error searching restaurants",
-        error: err.message,
+      const results = await RestaurantService.search({
+        location,
+        capacity : capacity ? parseInt(capacity) : null,
+        date,
+        minPrice : minPrice ? parseFloat(minPrice) : null,
+        maxPrice : maxPrice ? parseFloat(maxPrice) : null,
       });
+      res.json(results)
+    }catch(err){
+      res.status(500).json({message : "Error searching restaurants", error : err.message});
     }
   }
   static async getTopBookedRestaurants(req, res) {
@@ -152,7 +136,11 @@ class RestaurantController {
       const restaurants = await RestaurantService.getTopBookedRestaurants(limit);
       res.json(restaurants);
     } catch (err) {
-      res.status(500).json({ message: 'Error fetching top booked restaurants', error: err.message });
+      console.error("❌ Error in RestaurantController.search:", err);
+      res.status(500).json({
+        message: "Error searching restaurants",
+        error: err.message,
+      });
     }
   }
   static async getTopRatedRestaurants(req, res) {

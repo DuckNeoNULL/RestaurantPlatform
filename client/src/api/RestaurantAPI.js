@@ -1,5 +1,5 @@
 
-const API_BASE_URL = "http://localhost:8080/api"; // backend base URL
+const API_BASE_URL = "http://localhost:5000/api"; // backend base URL
 
 export async function fetchRestaurants(location = "danang") {
   try {

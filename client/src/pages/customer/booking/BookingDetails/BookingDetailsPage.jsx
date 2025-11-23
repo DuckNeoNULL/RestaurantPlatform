@@ -217,40 +217,91 @@ export default function BookingDetailsPage() {
   // --- Load data ---
   useEffect(() => {
     if (hasLoaded) return;
-    // 1️⃣ Ưu tiên lấy từ sessionStorage theo bookingId
-    const stored = sessionStorage.getItem(`booking_${bookingId}`);
-    console.log("Stored booking:", stored);
-    if (stored) {
+
+    // 0️⃣ Try route state first (when navigation supplied booking via state)
+    const stateBooking = location.state?.booking;
+    if (stateBooking) {
       try {
-        const parsed = JSON.parse(stored);
-        // Chuẩn hóa dữ liệu từ backend
-        const normalized = buildDetailPayload(parsed);
-        // console.log(normalized); 
+        const normalized = buildDetailPayload(stateBooking);
         setBooking(normalized);
-        // Update Redux
         try {
-          hydrateFromDTO(normalized)
+          hydrateFromDTO(normalized);
           setFinancial({
             originalPrice: normalized.originalPrice,
             discountAmount: normalized.discountAmount,
             VAT: normalized.VAT,
             totalAmount: normalized.totalAmount,
-          })
-        } catch {}
+          });
+        } catch (e) {}
+        // persist raw payload for reloads
+        try { sessionStorage.setItem(`booking_${normalized.bookingID}`, JSON.stringify(stateBooking)); } catch (e) {}
+        setHasLoaded(true);
+        setLoading(false);
+        return;
+      } catch (e) {
+        console.warn("Failed to normalize state booking", e);
+      }
+    }
+
+    // 1️⃣ Fall back to sessionStorage
+    const stored = sessionStorage.getItem(`booking_${bookingId}`);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        const normalized = buildDetailPayload(parsed);
+        setBooking(normalized);
+        try {
+          hydrateFromDTO(normalized);
+          setFinancial({
+            originalPrice: normalized.originalPrice,
+            discountAmount: normalized.discountAmount,
+            VAT: normalized.VAT,
+            totalAmount: normalized.totalAmount,
+          });
+        } catch (e) {}
         setHasLoaded(true);
         setLoading(false);
         return;
       } catch (err) {
-        console.warn("Cannot parse stored booking");
+        console.warn("Cannot parse stored booking", err);
       }
     }
 
-    // 2️⃣ Nếu không có → hiển thị lỗi
-    setLoading(false);
-    setHasLoaded(true);
-    alert("Không tìm thấy thông tin đặt tiệc. Vui lòng quay lại trang danh sách.");
-    navigate(-1);
-  }, [bookingId, hasLoaded]);
+    // 2️⃣ Final fallback: try fetching detail from API
+    const fetchRemote = async () => {
+      try {
+        const res = await fetch(`/api/bookings/${bookingId}`);
+        if (res.ok) {
+          const data = await res.json();
+          const normalized = buildDetailPayload(data);
+          setBooking(normalized);
+          try {
+            hydrateFromDTO(normalized);
+            setFinancial({
+              originalPrice: normalized.originalPrice,
+              discountAmount: normalized.discountAmount,
+              VAT: normalized.VAT,
+              totalAmount: normalized.totalAmount,
+            });
+          } catch (e) {}
+          try { sessionStorage.setItem(`booking_${normalized.bookingID}`, JSON.stringify(data)); } catch (e) {}
+          setHasLoaded(true);
+          setLoading(false);
+          return;
+        }
+      } catch (e) {
+        console.warn("Remote booking fetch failed", e);
+      }
+
+      // no data -> notify and go back
+      setLoading(false);
+      setHasLoaded(true);
+      alert("Không tìm thấy thông tin đặt tiệc. Vui lòng quay lại trang danh sách.");
+      navigate(-1);
+    };
+
+    fetchRemote();
+  }, [bookingId, hasLoaded, location.state, hydrateFromDTO, setFinancial, navigate]);
 
 
   // --- Payment state ---
@@ -325,7 +376,7 @@ export default function BookingDetailsPage() {
 
   return (
     <MainLayout>
-      <div style={{ maxWidth: "1200px", margin: "0 160px" }} className="container-fluid ">
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 16px" }} className="container-fluid">
         <Container fluid className="py-4">
           <Card
             className="mb-3"

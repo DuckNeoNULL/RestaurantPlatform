@@ -45,9 +45,6 @@ class RestaurantService {
         "address.number, address.street and address.ward are required"
       );
     }
-    if (phone !== undefined && phone !== null && typeof phone !== 'string') {
-      throw new Error('phone must be a string');
-    }
     return await RestaurantDAO.createRestaurant(data);
   }
 

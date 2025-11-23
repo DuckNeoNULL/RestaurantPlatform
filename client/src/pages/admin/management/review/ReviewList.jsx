@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "../../../../api/axios";
 import AdminLayout from "../../../../layouts/AdminLayout";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
+import { Search } from "lucide-react";
 
 export default function ReviewList() {
   const [reviews, setReviews] = useState([]);
   const [selected, setSelected] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadReviews();
@@ -27,7 +29,7 @@ export default function ReviewList() {
       setSelected(res.data.data);
       setShowDetail(true);
     } catch (err) {
-      console.error("❌ Load review detail failed:", err);
+      console.error("Load review detail failed:", err);
     }
   };
 
@@ -39,14 +41,77 @@ export default function ReviewList() {
       loadReviews();
       alert("Đã xoá thành công!");
     } catch (err) {
-      console.error("❌ Delete review failed:", err);
+      console.error("Delete review failed:", err);
     }
   };
+
+  // Filter reviews based on search query
+  const filteredReviews = useMemo(() => {
+    if (!searchQuery.trim()) return reviews;
+
+    const query = searchQuery.toLowerCase().trim();
+    return reviews.filter((r) => {
+      const reviewID = String(r.reviewID || "").toLowerCase();
+      const customerName = (r.customer?.user?.fullName || "").toLowerCase();
+      const restaurantName = (
+        r.booking?.hall?.restaurant?.name || ""
+      ).toLowerCase();
+      const rating = String(r.rating || "").toLowerCase();
+      const comment = (r.comment || "").toLowerCase();
+      const date = new Date(r.createdAt).toLocaleDateString("vi-VN").toLowerCase();
+
+      return (
+        reviewID.includes(query) ||
+        customerName.includes(query) ||
+        restaurantName.includes(query) ||
+        rating.includes(query) ||
+        comment.includes(query) ||
+        date.includes(query)
+      );
+    });
+  }, [reviews, searchQuery]);
 
   return (
     <AdminLayout title="Quản lý đánh giá">
       <div className="container py-4">
-        <h4 className="fw-bold mb-3">Danh sách đánh giá</h4>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h4 className="fw-bold mb-0">Danh sách đánh giá</h4>
+          <div style={{ width: "350px", position: "relative" }}>
+            <Search
+              size={18}
+              style={{
+                position: "absolute",
+                left: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "#6b7280",
+                pointerEvents: "none",
+              }}
+            />
+            <Form.Control
+              type="text"
+              placeholder="Tìm kiếm theo ID, khách hàng, nhà hàng..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                paddingLeft: "40px",
+                borderRadius: "8px",
+                border: "1px solid #d1d5db",
+                fontSize: "0.9375rem",
+              }}
+            />
+          </div>
+        </div>
+
+        {searchQuery && (
+          <div className="mb-3">
+            <small className="text-muted">
+              Tìm thấy <strong>{filteredReviews.length}</strong> kết quả
+              {filteredReviews.length !== reviews.length &&
+                ` trong tổng số ${reviews.length} đánh giá`}
+            </small>
+          </div>
+        )}
 
         <div className="card shadow-sm">
           <div className="card-body table-responsive">
@@ -62,7 +127,7 @@ export default function ReviewList() {
                 </tr>
               </thead>
               <tbody>
-                {reviews.map((r) => (
+                {filteredReviews.map((r) => (
                   <tr key={r.reviewID}>
                     <td>{r.reviewID}</td>
                     <td>{r.customer?.user?.fullName}</td>
@@ -89,10 +154,12 @@ export default function ReviewList() {
                   </tr>
                 ))}
 
-                {reviews.length === 0 && (
+                {filteredReviews.length === 0 && (
                   <tr>
                     <td colSpan="6" className="text-center py-4 text-muted">
-                      Không có đánh giá nào.
+                      {searchQuery
+                        ? "Không tìm thấy đánh giá nào phù hợp với từ khóa tìm kiếm."
+                        : "Không có đánh giá nào."}
                     </td>
                   </tr>
                 )}

@@ -19,18 +19,18 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div
-        style={{
-          minHeight: "100vh",
-        }}
-      >
+      <div style={{ minHeight: "100vh" }}>
+        {/* Modern Tab Navigation */}
         <div
           style={{
             display: "flex",
-            gap: "16px",
-            borderBottom: "2px solid #e5e7eb",
-            paddingBottom: "12px",
-            marginBottom: "24px",
+            gap: "8px",
+            borderBottom: "1px solid #e5e7eb",
+            paddingBottom: "0",
+            marginBottom: "32px",
+            backgroundColor: "#f9fafb",
+            padding: "8px",
+            borderRadius: "12px",
           }}
         >
           {tabs.map((tab) => (
@@ -38,18 +38,33 @@ export default function AdminDashboard() {
               key={tab.key}
               onClick={() => setCurrentView(tab.key)}
               style={{
-                background: "none",
+                background:
+                  currentView === tab.key ? "#ffffff" : "transparent",
                 border: "none",
-                padding: "8px 16px",
-                fontSize: "0.875rem",
-                fontWeight: "600",
-                color:
-                  currentView === tab.key ? "#8b5cf6" : "#6b7280",
-                borderBottom:
-                  currentView === tab.key
-                    ? "2px solid #8b5cf6"
-                    : "none",
+                padding: "12px 24px",
+                fontSize: "0.9375rem",
+                fontWeight: currentView === tab.key ? "600" : "500",
+                color: currentView === tab.key ? "#8b5cf6" : "#6b7280",
                 cursor: "pointer",
+                borderRadius: "8px",
+                transition: "all 0.2s ease",
+                boxShadow:
+                  currentView === tab.key
+                    ? "0 2px 4px rgba(139, 92, 246, 0.1)"
+                    : "none",
+                position: "relative",
+              }}
+              onMouseEnter={(e) => {
+                if (currentView !== tab.key) {
+                  e.target.style.color = "#8b5cf6";
+                  e.target.style.backgroundColor = "rgba(139, 92, 246, 0.05)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (currentView !== tab.key) {
+                  e.target.style.color = "#6b7280";
+                  e.target.style.backgroundColor = "transparent";
+                }
               }}
             >
               {tab.label}
@@ -57,11 +72,31 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {currentView === "revenue" && <RevenueAnalytics />}
-        {currentView === "booking" && <BookingAnalytics />}
-        {currentView === "partner" && <PartnerPerformanceAnalytics />}
-        {currentView === "customer" && <CustomerInsightAnalytics />}
-        {currentView === "system" && <SystemSettings />}
+        {/* Content Area with smooth transition */}
+        <div
+          style={{
+            animation: "fadeIn 0.3s ease-in",
+          }}
+        >
+          {currentView === "revenue" && <RevenueAnalytics />}
+          {currentView === "booking" && <BookingAnalytics />}
+          {currentView === "partner" && <PartnerPerformanceAnalytics />}
+          {currentView === "customer" && <CustomerInsightAnalytics />}
+          {currentView === "system" && <SystemSettings />}
+        </div>
+
+        <style>{`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(8px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}</style>
       </div>
     </AdminLayout>
   );

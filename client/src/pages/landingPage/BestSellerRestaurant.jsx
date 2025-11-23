@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState, useEffect, getTopBookedRestaurants } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { Spotlight } from "lucide-react";
 import RestaurantCard from "./RestaurantCard";
 import ArrowButton from "../../components/ArrowButton";
-import { getTopBookedRestaurants } from "../../services/restaurantService";
 
 const TOP_RESTAURANTS = [
     {
@@ -157,7 +156,7 @@ export default function BestSellerRestaurant() {
                         }}
                         className="g-2"
                     >
-                        {items.map(r => (
+                        {TOP_RESTAURANTS.map(r => (
                             <Col
                                 as="div"
                                 key={r.restaurantID}

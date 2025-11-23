@@ -40,9 +40,45 @@ export default function RevenueAnalytics() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>⏳ Đang tải dữ liệu doanh thu...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
-  if (!stats) return <p>Không có dữ liệu doanh thu.</p>;
+  if (loading)
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          padding: "60px 20px",
+          color: "#6b7280",
+          fontSize: "1rem",
+        }}
+      >
+        ⏳ Đang tải dữ liệu doanh thu...
+      </div>
+    );
+  if (error)
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          padding: "60px 20px",
+          color: "#ef4444",
+          fontSize: "1rem",
+        }}
+      >
+        {error}
+      </div>
+    );
+  if (!stats)
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          padding: "60px 20px",
+          color: "#6b7280",
+          fontSize: "1rem",
+        }}
+      >
+        Không có dữ liệu doanh thu.
+      </div>
+    );
 
   // 🧮 Xử lý dữ liệu trả về từ API
   const revenueData = stats.revenueByMonth.map((r) => ({
@@ -71,10 +107,23 @@ export default function RevenueAnalytics() {
     <div>
       <Row className="mb-4">
         <Col>
-          <h2 style={{ fontWeight: 600, color: "#1f2937" }}>
-            💰 Phân tích Doanh thu
+          <h2
+            style={{
+              fontWeight: 700,
+              color: "#111827",
+              fontSize: "1.75rem",
+              marginBottom: "8px",
+            }}
+          >
+            Phân tích Doanh thu
           </h2>
-          <p className="text-muted mb-0">
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: "0.9375rem",
+              marginBottom: 0,
+            }}
+          >
             Tổng hợp & so sánh doanh thu hệ thống theo thời gian và nhà hàng
           </p>
         </Col>
@@ -100,12 +149,39 @@ export default function RevenueAnalytics() {
               ];
               exportToExcel(exportData, "RevenueAnalytics");
             }}
-            className="btn btn-outline-success btn-sm"
+            style={{
+              background: "#10b981",
+              color: "white",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              fontSize: "0.875rem",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: "0 2px 4px rgba(16, 185, 129, 0.2)",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = "#059669";
+              e.target.style.boxShadow = "0 4px 8px rgba(16, 185, 129, 0.3)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = "#10b981";
+              e.target.style.boxShadow = "0 2px 4px rgba(16, 185, 129, 0.2)";
+            }}
           >
             📤 Xuất Excel
           </button>
 
-          <p className="text-muted fst-italic mb-0 mt-1">
+          <p
+            style={{
+              color: "#9ca3af",
+              fontSize: "0.75rem",
+              fontStyle: "italic",
+              marginTop: "8px",
+              marginBottom: 0,
+            }}
+          >
             Cập nhật lần cuối: {new Date().toLocaleString("vi-VN")}
           </p>
         </Col>
@@ -145,13 +221,24 @@ export default function RevenueAnalytics() {
       </Row>
 
       {/* Biểu đồ doanh thu theo thời gian */}
-      <h4 style={{ fontWeight: 600, color: "#1f2937", marginBottom: "16px" }}>
+      <h4
+        style={{
+          fontWeight: 600,
+          color: "#111827",
+          marginBottom: "20px",
+          fontSize: "1.25rem",
+        }}
+      >
         Doanh thu theo thời gian
       </h4>
 
       <Card
         className="mb-4"
-        style={{ borderRadius: "8px", border: "1px solid #e5e7eb" }}
+        style={{
+          borderRadius: "12px",
+          border: "1px solid #e5e7eb",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+        }}
       >
         <Card.Body>
           <ResponsiveContainer width="100%" height={320}>
@@ -184,7 +271,12 @@ export default function RevenueAnalytics() {
       {revenueByRestaurant.length > 0 && (
         <>
           <h4
-            style={{ fontWeight: 600, color: "#1f2937", marginBottom: "16px" }}
+            style={{
+              fontWeight: 600,
+              color: "#111827",
+              marginBottom: "20px",
+              fontSize: "1.25rem",
+            }}
           >
             So sánh doanh thu giữa các nhà hàng
           </h4>
@@ -192,7 +284,11 @@ export default function RevenueAnalytics() {
             <Col md={8}>
               <Card
                 className="mb-4"
-                style={{ borderRadius: "8px", border: "1px solid #e5e7eb" }}
+                style={{
+                  borderRadius: "12px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}
               >
                 <Card.Body>
                   <ResponsiveContainer width="100%" height={320}>
@@ -202,6 +298,12 @@ export default function RevenueAnalytics() {
                       <YAxis
                         yAxisId="left"
                         tickFormatter={formatCompactCurrency}
+                        stroke="#9ca3af"
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        stroke="#9ca3af"
                       />
                       <Tooltip
                         formatter={(value, name) =>
@@ -240,7 +342,11 @@ export default function RevenueAnalytics() {
             <Col md={4}>
               <Card
                 className="mb-4"
-                style={{ borderRadius: "8px", border: "1px solid #e5e7eb" }}
+                style={{
+                  borderRadius: "12px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}
               >
                 <Card.Body>
                   <ResponsiveContainer width="100%" height={320}>

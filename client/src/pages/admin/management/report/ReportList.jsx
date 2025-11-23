@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "../../../../api/axios";
 import AdminLayout from "../../../../layouts/AdminLayout";
-import { Modal, Button, Badge } from "react-bootstrap";
+import { Modal, Button, Badge, Form } from "react-bootstrap";
+import { Search } from "lucide-react";
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
   const [selected, setSelected] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadReports();
@@ -68,10 +70,76 @@ export default function ReportList() {
     }
   };
 
+  // Filter reports based on search query
+  const filteredReports = useMemo(() => {
+    if (!searchQuery.trim()) return reports;
+
+    const query = searchQuery.toLowerCase().trim();
+    return reports.filter((r) => {
+      const reportID = String(r.reportID || "").toLowerCase();
+      const reporterName = (r.user?.fullName || "").toLowerCase();
+      const content = (r.content || "").toLowerCase();
+      const targetType = r.targetType === 1 ? "nhà hàng" : "đánh giá";
+      const statusText =
+        r.status === 0
+          ? "chờ xử lý"
+          : r.status === 1
+          ? "đã xử lý"
+          : r.status === 2
+          ? "từ chối"
+          : "";
+
+      return (
+        reportID.includes(query) ||
+        reporterName.includes(query) ||
+        content.includes(query) ||
+        targetType.includes(query) ||
+        statusText.includes(query)
+      );
+    });
+  }, [reports, searchQuery]);
+
   return (
     <AdminLayout title="Quản lý báo cáo">
       <div className="container py-4">
-        <h4 className="fw-bold mb-3">Danh sách báo cáo</h4>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h4 className="fw-bold mb-0">Danh sách báo cáo</h4>
+          <div style={{ width: "350px", position: "relative" }}>
+            <Search
+              size={18}
+              style={{
+                position: "absolute",
+                left: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "#6b7280",
+                pointerEvents: "none",
+              }}
+            />
+            <Form.Control
+              type="text"
+              placeholder="Tìm kiếm theo ID, người báo cáo, nội dung..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                paddingLeft: "40px",
+                borderRadius: "8px",
+                border: "1px solid #d1d5db",
+                fontSize: "0.9375rem",
+              }}
+            />
+          </div>
+        </div>
+
+        {searchQuery && (
+          <div className="mb-3">
+            <small className="text-muted">
+              Tìm thấy <strong>{filteredReports.length}</strong> kết quả
+              {filteredReports.length !== reports.length &&
+                ` trong tổng số ${reports.length} báo cáo`}
+            </small>
+          </div>
+        )}
 
         <div className="card shadow-sm">
           <div className="card-body table-responsive">
@@ -88,7 +156,7 @@ export default function ReportList() {
               </thead>
 
               <tbody>
-                {reports.map((r) => (
+                {filteredReports.map((r) => (
                   <tr key={r.reportID}>
                     <td>{r.reportID}</td>
                     <td>{r.user?.fullName}</td>
@@ -128,10 +196,12 @@ export default function ReportList() {
                   </tr>
                 ))}
 
-                {reports.length === 0 && (
+                {filteredReports.length === 0 && (
                   <tr>
                     <td colSpan="6" className="text-center py-4 text-muted">
-                      Không có báo cáo nào.
+                      {searchQuery
+                        ? "Không tìm thấy báo cáo nào phù hợp với từ khóa tìm kiếm."
+                        : "Không có báo cáo nào."}
                     </td>
                   </tr>
                 )}

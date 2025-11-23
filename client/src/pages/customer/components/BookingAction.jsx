@@ -28,6 +28,12 @@ export default function BookingActions({
               as={Link}
               to={`/booking/${bookingID}`}
               state={{ booking: prepareAndStore() }}
+              onClick={() => {
+                try {
+                  const data = prepareAndStore();
+                  sessionStorage.setItem(`booking_${bookingID}`, JSON.stringify(data));
+                } catch (e) {}
+              }}
               variant="outline-primary"
               size="sm"
               className="flex-grow-1"
@@ -51,6 +57,12 @@ export default function BookingActions({
               as={Link}
               to={`/booking/${bookingID}`}
               state={{ booking: prepareAndStore() }}
+              onClick={() => {
+                try {
+                  const data = prepareAndStore();
+                  sessionStorage.setItem(`booking_${bookingID}`, JSON.stringify(data));
+                } catch (e) {}
+              }}
               variant="outline-secondary"
               size="sm"
               className="flex-grow-1"
@@ -130,6 +142,12 @@ export default function BookingActions({
             as={Link}
             to={`/booking/${bookingID}`}
             state={{ booking: prepareAndStore() }}
+            onClick={() => {
+              try {
+                const data = prepareAndStore();
+                sessionStorage.setItem(`booking_${bookingID}`, JSON.stringify(data));
+              } catch (e) {}
+            }}
             variant="outline-primary"
             className="flex-grow-1"
           >
@@ -153,6 +171,12 @@ export default function BookingActions({
             as={Link}
             to={`/booking/${bookingID}`}
             state={{ booking: prepareAndStore() }}
+            onClick={() => {
+              try {
+                const data = prepareAndStore();
+                sessionStorage.setItem(`booking_${bookingID}`, JSON.stringify(data));
+              } catch (e) {}
+            }}
             variant="outline-secondary"
             className="flex-grow-1"
           >
@@ -217,6 +241,12 @@ export default function BookingActions({
           as={Link}
           to={`/booking/${bookingID}`}
           state={{ booking: prepareAndStore() }}
+          onClick={() => {
+            try {
+              const data = prepareAndStore();
+              sessionStorage.setItem(`booking_${bookingID}`, JSON.stringify(data));
+            } catch (e) {}
+          }}
           variant="outline-secondary"
           className="w-100"
         >

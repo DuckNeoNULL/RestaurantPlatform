@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import "../../../styles/RestaurantDetailsStyles.css";
 const MenuList = ({ restaurant }) => {
   const [hovered, setHovered] = useState(null);
+  const menus =restaurant.menus?.filter(menu => menu.status === 1) || [];
   return (
     <div>
       <h4 className="section-title mb-3">Danh sách thực đơn</h4>
 
       <div className="row g-3">
-        {restaurant.menus?.map((menu) => (
+        {menus.map((menu) => (
           <div key={menu.id} className="col-md-3">
             {/* Card menu với hover overlay */}
             <div

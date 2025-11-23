@@ -17,21 +17,40 @@ const status ={
 }
 
 class ContractDAO {
-    static async getByRestaurantID(restaurantID) {
-        const rows = await contract.findAll({
-            where: { restaurantID },
-            attributes: ['contractID', 'bookingID', 'contractURL', 'signedDate', 'status']
-        });
-        return toDTOs(rows);
-    }
-    static async getByID(contractID) {
-        const r = await contract.findByPk(contractID, {
-            attributes: ['contractID', 'bookingID', 'contractURL', 'signedDate', 'status']
+    static async getByBookingID(bookingID) {
+        const r = await contract.findOne({
+            where: { bookingID, isActive: true },
+            order: [['createdAt', 'DESC']]
         });
         return toDTO(r);
     }
+    static async getByRestaurantID(restaurantID) {
+        // Query through booking -> hall -> restaurant
+        const { sequelize } = db;
+        const [rows] = await sequelize.query(`
+            SELECT c.contractID, c.bookingID, c.fileOriginalUrl, c.status
+            FROM Contract c
+            INNER JOIN Booking b ON c.bookingID = b.bookingID
+            INNER JOIN Hall h ON b.hallID = h.hallID
+            WHERE h.restaurantID = :restaurantID
+        `, {
+            replacements: { restaurantID },
+            type: sequelize.QueryTypes.SELECT
+        });
+        return toDTOs(rows || []);
+    }
+    static async getByID(contractID) {
+        const r = await contract.findByPk(contractID);
+        return toDTO(r);
+    }
     static async addContract(bookingID, restaurantID, contractURL, signedDate, status) {
-        const c = await contract.create({ bookingID, restaurantID, contractURL, signedDate, status });
+        // Note: contract table doesn't have restaurantID field, but we keep it in signature for compatibility
+        // Map contractURL to fileOriginalUrl to match model
+        const c = await contract.create({ 
+            bookingID, 
+            fileOriginalUrl: contractURL, 
+            status 
+        });
         return toDTO(c);
     }
     static async updateContract(contractID, contractData) {

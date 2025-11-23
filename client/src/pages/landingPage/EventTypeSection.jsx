@@ -31,9 +31,17 @@ const EventTypesSection = () => {
                 {!loading &&
                     items.map(event => (
                         <Col key={event.eventTypeID || event.id} xs={12} sm={6} md={4} lg={3}>
-                            <Card className="h-100 shadow-sm border-0 text-center p-3">
+                            <Card
+                                className="h-100 shadow-sm border-0 text-center p-3"
+                                style={{
+                                    background: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
+                                    color: "#fff",
+                                }}
+                            >
                                 <Card.Body>
-                                    <Card.Title className="fw-semibold">{event.name}</Card.Title>
+                                    <Card.Title className="fw-semibold" style={{ color: "#fff" }}>
+                                        {event.name}
+                                    </Card.Title>
                                 </Card.Body>
                             </Card>
                         </Col>

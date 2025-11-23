@@ -8,8 +8,16 @@ import { Badge, Button, Col, Form, Row, Table } from "react-bootstrap";
 import ServiceSelectorModal from "./ServiceSelectorModal";
 import SpecialRequestSection from "./SpecialRequestSection";
 import { useAdditionRestaurant } from "../../../hooks/useAdditionRestaurant";
-const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searchData, promotions }) => {
-  const { booking, setBookingField, setMenu, setDishes, setServices } = useBooking();
+const BookingInfoSection = ({
+  menus = [],
+  services = [],
+  restaurant,
+  hall,
+  searchData,
+  promotions,
+}) => {
+  const { booking, setBookingField, setMenu, setDishes, setServices } =
+    useBooking();
   const { bookingInfo, menu } = booking;
   const [menuPreview, setMenuPreview] = useState(null);
   const [dishesPreview, setDishesPreview] = useState({});
@@ -23,8 +31,12 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
 
   // Local state for editable fields
   const [date, setDate] = useState(searchData?.date || bookingInfo?.date || "");
-  const [eventType, setEventType] = useState(searchData?.eventType || bookingInfo?.eventType || "");
-  const [tables, setTables] = useState(searchData?.tables || bookingInfo?.tables || 1);
+  const [eventType, setEventType] = useState(
+    searchData?.eventType || bookingInfo?.eventType || ""
+  );
+  const [tables, setTables] = useState(
+    searchData?.tables || bookingInfo?.tables || 1
+  );
   // Use hall object passed from props
  
   const serviceFiltered = useMemo(() => {
@@ -53,27 +65,46 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
       setBookingField("eventType", searchData.eventType || eventType);
       setBookingField("tables", searchData.tables || tables);
     }
-  }, [restaurant, selectedHall, date, eventType, tables, setBookingField, isFromSearch, searchData]);
+  }, [
+    restaurant,
+    selectedHall,
+    date,
+    eventType,
+    tables,
+    setBookingField,
+    isFromSearch,
+    searchData,
+  ]);
 
   return (
-    <section className="p-4 border rounded bg-white shadow-sm text-sm" style={{ fontSize: "0.95rem" }}>
+    <section
+      className="p-4 border rounded bg-white shadow-sm text-sm"
+      style={{ fontSize: "0.95rem" }}
+    >
       <h3 className="fw-bold mb-3" style={{ color: "#e11d48" }}>
         Chi tiết đặt chỗ
       </h3>
       <div className="mb-3">
         <Row className="mb-2">
-          <Col xs={5} className="fw-semibold">Nhà hàng</Col>
+          <Col xs={5} className="fw-semibold">
+            Nhà hàng
+          </Col>
           <Col>{restaurant?.name}</Col>
         </Row>
 
         <Row className="mb-2">
-          <Col xs={5} className="fw-semibold">Sảnh</Col>
+          <Col xs={5} className="fw-semibold">
+            Sảnh
+          </Col>
           <Col>{selectedHall?.name}</Col>
         </Row>
 
         <Row className="mb-2 align-items-center">
           <Col xs={5} className="fw-semibold">
-            Ngày diễn ra {isFromSearch && <span className="text-muted small">(được lock từ tìm kiếm)</span>}
+            Ngày diễn ra{" "}
+            {isFromSearch && (
+              <span className="text-muted small">(được lock từ tìm kiếm)</span>
+            )}
           </Col>
           <Col>
             <DateInput
@@ -87,12 +118,17 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
 
         <Row className="mb-2 align-items-center">
           <Col xs={5} className="fw-semibold">
-            Loại sự kiện {isFromSearch && <span className="text-muted small">(được lock từ tìm kiếm)</span>}
+            Loại sự kiện{" "}
+            {isFromSearch && (
+              <span className="text-muted small">(được lock từ tìm kiếm)</span>
+            )}
           </Col>
           <Col>
             <Form.Select
               value={eventType}
-              onChange={isFromSearch ? undefined : (e) => setEventType(e.target.value)}
+              onChange={
+                isFromSearch ? undefined : (e) => setEventType(e.target.value)
+              }
               disabled={isFromSearch}
             >
               <option value="">Chọn loại sự kiện</option>
@@ -107,14 +143,21 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
 
         <Row className="mb-2 align-items-center">
           <Col xs={5} className="fw-semibold">
-            Số bàn {isFromSearch && <span className="text-muted small">(được lock từ tìm kiếm)</span>}
+            Số bàn{" "}
+            {isFromSearch && (
+              <span className="text-muted small">(được lock từ tìm kiếm)</span>
+            )}
           </Col>
           <Col>
             <Form.Control
               type="number"
               min={1}
               value={tables}
-              onChange={isFromSearch ? undefined : (e) => setTables(Math.max(1, Number(e.target.value || 1)))}
+              onChange={
+                isFromSearch
+                  ? undefined
+                  : (e) => setTables(Math.max(1, Number(e.target.value || 1)))
+              }
               disabled={isFromSearch}
             />
           </Col>
@@ -174,7 +217,10 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
               onSelect={(selection) => {
                 // selection: { menu, dishes }
                 const pickedMenu = selection.menu;
-                const menuObj = typeof pickedMenu === 'string' ? { name: pickedMenu } : pickedMenu;
+                const menuObj =
+                  typeof pickedMenu === "string"
+                    ? { name: pickedMenu }
+                    : pickedMenu;
                 setMenu(menuObj);
                 setMenuPreview(menuObj);
                 // Build full dish objects with real dishID using dishMap in categories
@@ -192,18 +238,21 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
                   setBookingField('dishIDs', selection.dishIDs);
                 }
                 const dishesObj = {};
-                Object.keys(selection.dishes).forEach(cat => {
+                Object.keys(selection.dishes).forEach((cat) => {
                   dishesObj[cat] = selection.dishes[cat];
                 });
                 setDishesPreview(dishesObj);
               }}
             />
             {menuPreview && (
-              <Button variant="outline-secondary" size="sm" onClick={() => setShowMenuPreview((s) => !s)}>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={() => setShowMenuPreview((s) => !s)}
+              >
                 {showMenuPreview ? "Ẩn chi tiết" : "Xem chi tiết"}
               </Button>
             )}
-
           </Col>
         </Row>
         {/* Bảng hiển thị realtime từ state tạm */}
@@ -224,8 +273,8 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
                     <tr key={cat.name}>
                       <td className="fw-semibold">{cat.name}</td>
                       <td>
-                        {catDishes.length > 0
-                          ? catDishes.map((d, idx) => (
+                        {catDishes.length > 0 ? (
+                          catDishes.map((d, idx) => (
                             <Badge
                               key={idx}
                               bg="info"
@@ -236,7 +285,9 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
                               {d}
                             </Badge>
                           ))
-                          : <span className="text-muted">Chưa chọn</span>}
+                        ) : (
+                          <span className="text-muted">Chưa chọn</span>
+                        )}
                       </td>
                       <td>{cat.limit}</td>
                     </tr>
@@ -249,7 +300,9 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
       </div>
       <div className="mb-3">
         <Row className="mb-2 align-items-center">
-          <Col xs={5} className="fw-semibold">Dịch vụ</Col>
+          <Col xs={5} className="fw-semibold">
+            Dịch vụ
+          </Col>
           <Col className="d-flex justify-content-end gap-2">
             <ServiceSelectorModal
               services={serviceFiltered}
@@ -270,37 +323,47 @@ const BookingInfoSection = ({ menus = [], services = [], restaurant, hall, searc
               <div className="text-muted small mt-2">Không có dịch vụ bổ sung phù hợp với loại sự kiện này.</div>
             )}
             {booking.services.length > 0 && (
-              <Button variant="outline-secondary" size="sm" onClick={() => setShowServicePreview((s) => !s)}>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={() => setShowServicePreview((s) => !s)}
+              >
                 {showServicePreview ? "Ẩn chi tiết" : "Xem chi tiết"}
               </Button>
             )}
           </Col>
         </Row>
 
-        {showServicePreview && booking.services && booking.services.length > 0 && (
-          <div className="mt-3">
-            <Table striped bordered hover size="sm" responsive>
-              <thead className="table-dark">
-                <tr>
-                  <th>Dịch vụ</th>
-                  <th>Số lượng</th>
-                  <th>Đơn giá</th>
-                  <th>Tổng</th>
-                </tr>
-              </thead>
-              <tbody>
-                {booking.services.map((s) => (
-                  <tr key={s.id}>
-                    <td>{s.name}</td>
-                    <td>{s.quantity ?? 1}</td>
-                    <td>{(s.price || 0).toLocaleString()}₫/ {s.unit}</td>
-                    <td>{((s.price || 0) * (s.quantity || 1)).toLocaleString()}₫</td>
+        {showServicePreview &&
+          booking.services &&
+          booking.services.length > 0 && (
+            <div className="mt-3">
+              <Table striped bordered hover size="sm" responsive>
+                <thead className="table-dark">
+                  <tr>
+                    <th>Dịch vụ</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Tổng</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {booking.services.map((s) => (
+                    <tr key={s.id}>
+                      <td>{s.name}</td>
+                      <td>{s.quantity ?? 1}</td>
+                      <td>
+                        {(s.price || 0).toLocaleString()}₫/ {s.unit}
+                      </td>
+                      <td>
+                        {((s.price || 0) * (s.quantity || 1)).toLocaleString()}₫
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+          )}
       </div>
       {/* <ServiceSelector services={services} /> */}
       <PromotionBadge promotions={promotions} tables={searchData.tables} menu={menu} services={booking.services} hallFee={selectedHall?.price || 0} />

@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "../../../../api/axios";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../../../../layouts/AdminLayout";
+import { Form } from "react-bootstrap";
+import { Search } from "lucide-react";
 
 export default function BookingList() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
 
@@ -39,10 +42,69 @@ export default function BookingList() {
 
   const openDetail = (id) => navigate(`/admin/bookings/${id}`);
 
+  // Filter bookings based on search query
+  const filteredBookings = useMemo(() => {
+    if (!searchQuery.trim()) return bookings;
+
+    const query = searchQuery.toLowerCase().trim();
+    return bookings.filter((b) => {
+      const bookingID = String(b.bookingID || "").toLowerCase();
+      const restaurantName = (
+        b?.hall?.restaurant?.name || ""
+      ).toLowerCase();
+      const customerName = (b.customer?.user?.fullName || "").toLowerCase();
+      const eventType = (b.eventType?.name || "").toLowerCase();
+      const eventDate = new Date(b.eventDate)
+        .toLocaleDateString("vi-VN")
+        .toLowerCase();
+      const totalAmount = String(b.totalAmount || "").toLowerCase();
+      const statusLabel = (STATUS[b.status]?.label || "").toLowerCase();
+
+      return (
+        bookingID.includes(query) ||
+        restaurantName.includes(query) ||
+        customerName.includes(query) ||
+        eventType.includes(query) ||
+        eventDate.includes(query) ||
+        totalAmount.includes(query) ||
+        statusLabel.includes(query)
+      );
+    });
+  }, [bookings, searchQuery]);
+
   return (
     <AdminLayout title="Quản lý đặt tiệc">
       <div className="container py-4">
-        <h2 className="fw-bold mb-4 text-primary">Danh sách đặt tiệc</h2>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 className="fw-bold mb-0 text-primary">Danh sách đặt tiệc</h2>
+          {!loading && bookings.length > 0 && (
+            <div style={{ width: "350px", position: "relative" }}>
+              <Search
+                size={18}
+                style={{
+                  position: "absolute",
+                  left: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "#6b7280",
+                  pointerEvents: "none",
+                }}
+              />
+              <Form.Control
+                type="text"
+                placeholder="Tìm kiếm theo nhà hàng, khách hàng, loại tiệc..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  paddingLeft: "40px",
+                  borderRadius: "8px",
+                  border: "1px solid #d1d5db",
+                  fontSize: "0.9375rem",
+                }}
+              />
+            </div>
+          )}
+        </div>
 
         {loading && <p className="text-muted text-center">Đang tải...</p>}
         {err && <p className="text-danger text-center">{err}</p>}
@@ -51,7 +113,17 @@ export default function BookingList() {
           <p className="text-muted text-center">Không có booking nào.</p>
         )}
 
-        {!loading && bookings.length > 0 && (
+        {searchQuery && !loading && bookings.length > 0 && (
+          <div className="mb-3">
+            <small className="text-muted">
+              Tìm thấy <strong>{filteredBookings.length}</strong> kết quả
+              {filteredBookings.length !== bookings.length &&
+                ` trong tổng số ${bookings.length} đặt tiệc`}
+            </small>
+          </div>
+        )}
+
+        {!loading && filteredBookings.length > 0 && (
           <div className="card shadow-sm rounded-4 overflow-hidden">
             <div className="d-flex px-4 py-3 fw-semibold bg-light text-muted border-bottom">
               <div className="col-3">Nhà hàng</div>
@@ -62,7 +134,7 @@ export default function BookingList() {
               <div className="col-1 text-center">Chi tiết</div>
             </div>
 
-            {bookings.map((b, index) => (
+            {filteredBookings.map((b, index) => (
               <div
                 key={b.bookingID}
                 className="d-flex px-4 py-3 border-bottom align-items-center"
@@ -107,6 +179,18 @@ export default function BookingList() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {!loading && bookings.length > 0 && filteredBookings.length === 0 && (
+          <div className="card shadow-sm rounded-4">
+            <div className="card-body text-center py-5">
+              <p className="text-muted mb-0">
+                {searchQuery
+                  ? "Không tìm thấy đặt tiệc nào phù hợp với từ khóa tìm kiếm."
+                  : "Không có booking nào."}
+              </p>
+            </div>
           </div>
         )}
       </div>

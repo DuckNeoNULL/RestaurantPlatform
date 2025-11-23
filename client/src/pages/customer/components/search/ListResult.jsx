@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import ProductCard from "../ProductCard";
 import {
+  Funnel,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -96,6 +97,7 @@ const ListResult = ({
 
         {/* SORT DROPDOWN */}
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Funnel size={18} color="#6B7280" />
           <span style={{ fontSize: 14, color: "#6B7280", fontWeight: 500 }}>
             Sắp xếp theo:
           </span>
@@ -104,19 +106,20 @@ const ListResult = ({
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               style={{
-                padding: "8px 14px",
-                border: "2px solid #e23359ff",
-                borderRadius: "999px",
+                padding: "10px 16px",
+                border: "2px solid #E11D48",
+                borderRadius: 8,
                 fontSize: 14,
-                fontWeight: 600,
+                fontWeight: 500,
                 background: "#fff",
-                color: "#e23359ff",
-                width: "fit-content",
+                color: "#E11D48",
+                minWidth: 200,
                 cursor: "pointer",
+                transition: "all 0.2s ease",
                 display: "flex",
                 alignItems: "center",
-                gap: 6,
-                transition: "0.2s ease"
+                justifyContent: "space-between",
+                gap: 8,
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#FFF1F2";
@@ -125,7 +128,7 @@ const ListResult = ({
                 e.currentTarget.style.background = "#fff";
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span>{currentOption.label}</span>
               </div>
               <ChevronDown

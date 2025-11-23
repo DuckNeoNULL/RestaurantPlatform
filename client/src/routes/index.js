@@ -39,7 +39,6 @@ import AdminPaymentDetail from "../pages/admin/management/payment/AdminPaymentDe
 import AdminReviewListPage from "../pages/admin/management/review/ReviewList";
 import AdminReportListPage from "../pages/admin/management/report/ReportList";
 
-
 import BookingListPage from "../pages/customer/bookingForm/BookingListPage";
 // import BookingForm from "../pages/customer/BookingForm";
 import Profile from "../pages/customer/Profile";
@@ -48,6 +47,7 @@ import PaymentSuccessPage from "../pages/customer/payment/PaymentSuccessPage";
 import PaymentFailedPage from "../pages/customer/payment/PaymentFailedPage";
 import BookingDetailsPage from "../pages/customer/booking/BookingDetails/BookingDetailsPage";
 import BookingPage from "../pages/customer/bookingForm/BookingPage";
+import AdminNegotiationPage from "../pages/admin/management/license/AdminNegotiationPage";
 
 function AppRoutes() {
   return (
@@ -58,6 +58,8 @@ function AppRoutes() {
         <Route path="/signup/partner" element={<SignUpOwner />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
+        {/* Alias to support existing links using singular path */}
+        <Route path="/restaurant/:id" element={<RestaurantDetailsPage />} />
         <Route path="/partner" element={<PartnerDashboard />} />
         <Route path="/partner/negotiation" element={<NegotiationPage />} />
         {/* <Route path="/partner/profile" element={<ProfileBusiness />} /> */}
@@ -103,6 +105,7 @@ function AppRoutes() {
         <Route path="/admin/payments/:id" element={<AdminPaymentDetail />} />
         <Route path="/admin/reviews" element={<AdminReviewListPage />} />
         <Route path="/admin/reports" element={<AdminReportListPage />} />
+        <Route path="/admin/negotiation/:id" element={<AdminNegotiationPage />} />
 
 
         {/* Booking Routes */}

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Card, Row, Col, Button, Form, Alert } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Card, Row, Col, Button, Form, Alert, Spinner } from "react-bootstrap";
 import {
   FileText,
   Download,
@@ -10,28 +10,146 @@ import {
   Send,
   Upload,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PartnerLayout from "../../../layouts/PartnerLayout";
 
 export default function ContractPage() {
   const navigate = useNavigate();
+  const { id: bookingID } = useParams(); // Get bookingID from URL params
 
-  const [contract, setContract] = useState({
-    contractID: 1,
-    bookingID: 101,
-    contractName: "Hợp đồng đặt tiệc cưới - The Rose Hall",
-    contractUrl:
-      "https://res.cloudinary.com/dszkninft/raw/upload/v1759654063/kyhoc8b9x9rfp9vfbrvl.html",
-    signedOwnerUrl: null,
-    signedByOwner: false,
-    signedByCustomer: false,
-    createdAt: "2025-10-08T12:00:00",
-    status: "Chưa ký",
-  });
+  const [contract, setContract] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [confirmSign, setConfirmSign] = useState(false);
   const [pendingFile, setPendingFile] = useState(null);
   const [infoMsg, setInfoMsg] = useState("");
+  const [contractHtml, setContractHtml] = useState(null); // Store fetched HTML content for Cloudinary files
+
+  // Helper function to get status text
+  const getStatusText = (statusCode) => {
+    switch (statusCode) {
+      case 0:
+        return "Chưa ký";
+      case 1:
+        return "Nhà hàng đã ký";
+      case 2:
+        return "Khách hàng đã ký";
+      case 3:
+        return "Đã hủy";
+      case 4:
+        return "Đã thay thế";
+      default:
+        return "Chưa ký";
+    }
+  };
+
+  // Fetch contract data from API
+  useEffect(() => {
+    const fetchContract = async () => {
+      if (!bookingID) {
+        setError("Booking ID không hợp lệ");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        
+        console.log('🔍 Fetching contract for bookingID:', bookingID);
+        
+        const response = await fetch(`/api/contracts/booking/${bookingID}`, {
+          credentials: "include",
+        });
+        
+        console.log('📡 Response status:', response.status, response.statusText);
+        
+        const data = await response.json();
+        console.log('📦 Response data:', data);
+        
+        if (!response.ok || !data.success) {
+          const errorMsg = data.message || "Không thể tải hợp đồng";
+          console.error('❌ API Error:', errorMsg);
+          
+          // Special handling for 404 - contract not found
+          if (response.status === 404) {
+            throw new Error(`Hợp đồng chưa được tạo cho booking này. Vui lòng đợi partner chấp nhận booking hoặc tạo contract thủ công qua API test endpoint.`);
+          }
+          
+          throw new Error(errorMsg);
+        }
+
+        const contractData = data.contract;
+        console.log('📄 Contract data:', contractData);
+        console.log('📄 Contract fileOriginalUrl:', contractData.fileOriginalUrl);
+        
+        // Build full URL for contract file
+        let contractUrl = contractData.fileOriginalUrl || contractData.contractUrl;
+        if (contractUrl && !contractUrl.startsWith('http')) {
+          // If it's a relative path starting with /uploads, add backend URL
+          if (contractUrl.startsWith('/uploads')) {
+            // Use full URL if needed (for iframe)
+            contractUrl = `http://localhost:5000${contractUrl}`;
+          }
+        }
+        
+        console.log('🔗 Final contractUrl:', contractUrl);
+        
+        // Map contract data to component state
+        setContract({
+          contractID: contractData.contractID,
+          bookingID: contractData.bookingID,
+          contractName: `Hợp đồng dịch vụ - Booking #${contractData.bookingID}`,
+          contractUrl: contractUrl,
+          signedOwnerUrl: contractData.filePartnerSignedUrl || null,
+          signedByOwner: contractData.filePartnerSignedUrl != null,
+          signedByCustomer: contractData.fileCustomerSignedUrl != null,
+          createdAt: contractData.createdAt || new Date().toISOString(),
+          status: getStatusText(contractData.status),
+          statusCode: contractData.status,
+        });
+        
+      } catch (err) {
+        console.error("Error fetching contract:", err);
+        setError(err.message || "Đã xảy ra lỗi khi tải hợp đồng");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContract();
+  }, [bookingID]);
+
+  // Fetch HTML content for Cloudinary HTML files
+  useEffect(() => {
+    // Reset HTML content when contract URL changes
+    setContractHtml(null);
+    
+    if (!contract?.contractUrl) return;
+
+    const contractUrl = contract.contractUrl;
+    const isCloudinaryHtml = contractUrl && 
+      (contractUrl.startsWith('https://res.cloudinary.com') || contractUrl.startsWith('http://res.cloudinary.com')) &&
+      (contractUrl.endsWith('.html') || contractUrl.includes('.html'));
+
+    if (isCloudinaryHtml) {
+      console.log('☁️ [ContractPage] Fetching HTML content from Cloudinary...');
+      fetch(contractUrl)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.text();
+        })
+        .then(html => {
+          setContractHtml(html);
+          console.log('✅ [ContractPage] HTML content fetched successfully');
+        })
+        .catch(err => {
+          console.error('❌ [ContractPage] Failed to fetch HTML content:', err);
+          // If fetch fails, user can still use "Open original" or "Download" buttons
+        });
+    }
+  }, [contract?.contractUrl]); // Only depend on contract URL
 
   const formatDate = (s) =>
     new Date(s).toLocaleDateString("vi-VN", {
@@ -40,12 +158,60 @@ export default function ContractPage() {
       year: "numeric",
     });
 
-  const getIframeSrc = (url) =>
-    `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(url)}`;
+  // Get iframe src - use direct URL if local, or Google Docs viewer for external
+  const getIframeSrc = (url) => {
+    if (!url) return null;
+    // If it's a local file (starts with /uploads), use directly
+    if (url.startsWith("/uploads") || url.startsWith("http://localhost")) {
+      // For HTML files, we can embed directly
+      if (url.endsWith(".html")) {
+        return url;
+      }
+      // For PDF, use Google Docs viewer or direct embed
+      return url;
+    }
+    // For external URLs, use Google Docs viewer
+    return `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(url)}`;
+  };
 
   const handleOpenOriginal = () => {
-    if (!contract.contractUrl) return;
-    window.open(contract.contractUrl, "_blank", "noopener,noreferrer");
+    if (!contract?.contractUrl) {
+      console.error('❌ Cannot open: missing contractUrl', contract);
+      alert('Không thể mở hợp đồng. Vui lòng thử lại.');
+      return;
+    }
+    
+    console.log('🔗 Opening contract URL:', contract.contractUrl);
+    
+    // Ensure full URL for local files
+    let url = contract.contractUrl;
+    if (url.startsWith("/uploads")) {
+      url = `http://localhost:5000${url}`;
+    }
+    
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  const handleDownload = () => {
+    if (!contract?.contractID || !contract?.contractUrl) {
+      console.error('❌ Cannot download: missing contractID or contractUrl', contract);
+      alert('Không thể tải xuống hợp đồng. Vui lòng thử lại.');
+      return;
+    }
+    
+    console.log('⬇️ Downloading contract:', contract.contractID);
+    
+    // If it's a local file, use the download endpoint
+    if (contract.contractUrl.startsWith("/uploads") || contract.contractUrl.includes("localhost")) {
+      // Use the API endpoint for download
+      const downloadUrl = `http://localhost:5000/api/contracts/${contract.contractID}/file?download=true`;
+      console.log('🔗 Download URL:', downloadUrl);
+      window.open(downloadUrl, "_blank", "noopener,noreferrer");
+    } else {
+      // For external URLs, open in new tab
+      console.log('🔗 External URL:', contract.contractUrl);
+      window.open(contract.contractUrl, "_blank", "noopener,noreferrer");
+    }
   };
 
   const handleConfirmSigned = () => {
@@ -97,6 +263,40 @@ export default function ContractPage() {
     alert("Đã gửi admin (mock).");
   };
 
+  if (loading) {
+    return (
+      <PartnerLayout>
+        <div className="p-3 d-flex justify-content-center align-items-center" style={{ minHeight: "400px" }}>
+          <div className="text-center">
+            <Spinner animation="border" variant="primary" />
+            <p className="mt-3 text-muted">Đang tải hợp đồng...</p>
+          </div>
+        </div>
+      </PartnerLayout>
+    );
+  }
+
+  if (error || !contract) {
+    return (
+      <PartnerLayout>
+        <div className="p-3">
+          <Button
+            variant="primary"
+            className="text-decoration-none text-dark mb-3 d-flex align-items-center gap-1"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft size={18} /> Quay lại
+          </Button>
+          <Card className="shadow-sm rounded-4 border-0 p-4">
+            <Alert variant="danger">
+              <strong>Lỗi:</strong> {error || "Không tìm thấy hợp đồng"}
+            </Alert>
+          </Card>
+        </div>
+      </PartnerLayout>
+    );
+  }
+
   return (
     <PartnerLayout>
       <div className="p-3">
@@ -130,13 +330,93 @@ export default function ContractPage() {
                   <h6 className="text-primary fw-semibold">Nội dung hợp đồng</h6>
                   {contract.contractUrl ? (
                     <div style={{ minHeight: 520 }}>
-                      <iframe
-                        title="contract-viewer"
-                        src={getIframeSrc(contract.contractUrl)}
-                        width="100%"
-                        height="560"
-                        style={{ border: "none", borderRadius: 8 }}
-                      />
+                      {(() => {
+                        const contractUrl = contract.contractUrl;
+                        const isCloudinaryUrl = contractUrl.startsWith('https://res.cloudinary.com') || contractUrl.startsWith('http://res.cloudinary.com');
+                        const isHtml = contractUrl.endsWith('.html') || contractUrl.includes('.html');
+                        
+                        console.log('🖼️ Contract URL:', contractUrl);
+                        console.log('☁️ Is Cloudinary:', isCloudinaryUrl);
+                        console.log('📄 Is HTML:', isHtml);
+                        
+                        // For Cloudinary HTML files, use fetched HTML content with srcdoc
+                        if (isCloudinaryUrl && isHtml) {
+                          console.log('☁️ [ContractPage] Rendering Cloudinary HTML file');
+                          
+                          if (contractHtml) {
+                            // HTML content is available, use srcdoc to inject directly
+                            return (
+                              <iframe
+                                title="contract-viewer"
+                                srcDoc={contractHtml}
+                                width="100%"
+                                height="560"
+                                style={{ border: "none", borderRadius: 8 }}
+                                onLoad={() => console.log('✅ [ContractPage] Iframe loaded with HTML content')}
+                                onError={(e) => {
+                                  console.error('❌ [ContractPage] Iframe load error:', e);
+                                  alert('Không thể tải hợp đồng. Vui lòng sử dụng "Mở hợp đồng gốc" hoặc "Tải xuống".');
+                                }}
+                              />
+                            );
+                          } else {
+                            // HTML content is still loading
+                            return (
+                              <div className="d-flex justify-content-center align-items-center" style={{ height: '560px' }}>
+                                <div className="text-center">
+                                  <Spinner animation="border" variant="primary" />
+                                  <p className="mt-3 text-muted">Đang tải nội dung hợp đồng...</p>
+                                </div>
+                              </div>
+                            );
+                          }
+                        }
+                        
+                        // For local HTML files
+                        if (contractUrl.endsWith(".html")) {
+                          let iframeSrc = contractUrl;
+                          if (iframeSrc.startsWith("/uploads")) {
+                            iframeSrc = `http://localhost:5000${iframeSrc}`;
+                          }
+                          console.log('🔗 Local HTML URL:', iframeSrc);
+                          
+                          return (
+                            <iframe
+                              title="contract-viewer"
+                              src={iframeSrc}
+                              width="100%"
+                              height="560"
+                              style={{ border: "none", borderRadius: 8 }}
+                              onLoad={() => console.log('✅ Iframe loaded successfully')}
+                              onError={(e) => {
+                                console.error('❌ Iframe load error:', e);
+                                alert('Không thể tải hợp đồng trong iframe. Vui lòng sử dụng "Mở hợp đồng gốc" hoặc "Tải xuống".');
+                              }}
+                            />
+                          );
+                        }
+                        
+                        // For PDF files
+                        let iframeSrc = contractUrl;
+                        if (iframeSrc.startsWith("/uploads")) {
+                          iframeSrc = `http://localhost:5000${iframeSrc}`;
+                        }
+                        
+                        return (
+                          <iframe
+                            title="contract-viewer"
+                            src={getIframeSrc(iframeSrc)}
+                            width="100%"
+                            height="560"
+                            style={{ border: "none", borderRadius: 8 }}
+                            onLoad={() => console.log('✅ Iframe loaded successfully')}
+                            onError={(e) => {
+                              console.error('❌ Iframe load error:', e);
+                              alert('Không thể tải hợp đồng trong iframe. Vui lòng sử dụng "Mở hợp đồng gốc" hoặc "Tải xuống".');
+                            }}
+                          />
+                        );
+                      })()}
                       <div className="mt-2 text-muted small">
                         Nếu không hiển thị, bấm "Mở hợp đồng gốc" hoặc "Tải xuống".
                       </div>
@@ -189,9 +469,17 @@ export default function ContractPage() {
                   <Button
                     variant="outline-primary"
                     className="w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
+                    onClick={handleDownload}
+                  >
+                    <Download size={16} /> Tải xuống hợp đồng
+                  </Button>
+
+                  <Button
+                    variant="outline-secondary"
+                    className="w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
                     onClick={handleOpenOriginal}
                   >
-                    <Download size={16} /> Mở hợp đồng gốc
+                    <FileText size={16} /> Mở hợp đồng gốc
                   </Button>
 
                   {/* Bấm xác nhận ký */}

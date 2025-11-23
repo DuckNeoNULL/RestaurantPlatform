@@ -3,6 +3,7 @@ import db from "../config/db.js";
 import { toDTO, toDTOs } from '../utils/convert/dto.js';
 import MenuDAO from './MenuDAO.js';
 import DishDAO from './DishDAO.js';
+import DishCategoryDAO from './DishCategoryDAO.js';
 import PromotionDAO from './PromotionDAO.js';
 import ServiceDAO from './ServiceDAO.js';
 import HallDAO from './HallDAO.js';
@@ -98,17 +99,19 @@ class RestaurantDAO {
     if (!r) return null;
     const dto = toDTO(r);
     // fetch related collections (menus, dishes, promotions, services, halls, amenities, eventTypes)
-    const [menus, dishes, promotions, services, halls, amenities, eventTypes] = await Promise.all([
-      MenuDAO.getByRestaurantID(restaurantID).catch(() => []),
+    const [menusRaw, dishes, promotions, services, halls, amenities, eventTypes, categories] = await Promise.all([
+      // Include dishes on menus so we can group them by category for the frontend
+      MenuDAO.getByRestaurantID(restaurantID, { includeDishes: true }).catch(() => []),
       DishDAO.getByRestaurantID(restaurantID).catch(() => []),
       PromotionDAO.getPromotionsByRestaurantID(restaurantID).catch(() => []),
       ServiceDAO.getByRestaurantID(restaurantID).catch(() => []),
       HallDAO.getHallsByRestaurantId(restaurantID).catch(() => []),
       AmenityDAO.getAmenitiesByRestaurantID(restaurantID).catch(() => []),
       EventTypeDAO.getAllByRestaurantID(restaurantID).catch(() => []),
+      DishCategoryDAO.getByRestaurantID(restaurantID).catch(() => []),
     ]);
 
-    console.log('DAO results:', { menus: menus?.length, dishes: dishes?.length, promotions: promotions?.length, services: services?.length, halls: halls?.length, amenities: amenities?.length, eventTypes: eventTypes?.length });
+    console.log('DAO results:', { menus: menusRaw?.length, dishes: dishes?.length, promotions: promotions?.length, services: services?.length, halls: halls?.length, amenities: amenities?.length, eventTypes: eventTypes?.length });
 
     // attach images per hall
     const hallsWithImages = await Promise.all(
@@ -117,6 +120,21 @@ class RestaurantDAO {
         return { ...h, images };
       })
     );
+
+    // Transform menus to include categories -> dishes grouping expected by the client
+    const menus = (menusRaw || []).map((m) => {
+      const menuDishes = m.dishes || [];
+      // Build categories for this menu by mapping global categories and attaching dishes that belong to this menu
+      const menuCategories = (categories || []).map((c) => ({
+        ...c,
+        dishes: (menuDishes || []).filter(d => d.categoryID === c.categoryID)
+      })).filter(c => Array.isArray(c.dishes) && c.dishes.length > 0);
+
+      return {
+        ...m,
+        categories: menuCategories,
+      };
+    });
 
     const result = {
       restaurantID: dto.restaurantID,
@@ -248,9 +266,13 @@ constructor({
   }
 
   static async toggleRestaurantStatus(restaurantID) {
-    const r = await restaurant.findByPk(restaurantID, { attributes: ['status'] });
+    // include primary key (restaurantID) so instance.update() has a PK to work with
+    const r = await restaurant.findByPk(restaurantID, { attributes: ['restaurantID','status'] });
     if (!r) return false;
-    await r.update({ status: !r.status });
+    const newStatus = !r.status;
+    console.log(`RestaurantDAO.toggleRestaurantStatus: toggling id=${restaurantID} from ${r.status} to ${newStatus}`);
+    await r.update({ status: newStatus });
+    console.log(`RestaurantDAO.toggleRestaurantStatus: update complete for id=${restaurantID}`);
     return true;
   }
 
