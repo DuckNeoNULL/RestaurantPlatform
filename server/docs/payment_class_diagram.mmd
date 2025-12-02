@@ -1,0 +1,134 @@
+---
+config:
+  layout: elk
+---
+classDiagram
+direction TB
+
+    %% Payment & Payout domain diagram (Controller -> Service -> DAO pattern)
+
+    class Payment {
+        +paymentID: ID
+        +bookingID: ID
+        +restaurantID: ID
+        +amount: Number
+        +type: PaymentType
+        +paymentMethod: PaymentMethod
+        +status: PaymentStatus
+        +transactionRef: String
+        +paymentDate: Date
+        +refundedAmount: Number
+        +providerResponse: Object
+        +toDTO(): PaymentResponseDTO
+    }
+
+    class Payout {
+        +payoutId: ID
+        +paymentId: ID
+        +restaurantPartnerId: ID
+        +grossAmount: Number
+        +commissionAmount: Number
+        +payoutAmount: Number
+        +method: PayoutMethod
+        +status: PayoutStatus
+        +transactionRef: String
+        +releasedBy: String
+        +releasedAt: Date
+    }
+
+    class PaymentStatus {
+        PENDING
+        PROCESSING
+        SUCCESS
+        FAILED
+        REFUNDED
+    }
+
+    class PayoutStatus {
+        PENDING
+        FAILED
+        COMPLETED
+    }
+
+    class PaymentDAO {
+        +getByBookingID(bookingID)
+        +getByRestaurantID(restaurantID)
+        +getByTransactionRef(txRef)
+        +createPayment(data)
+        +updatePaymentStatus(paymentID,newStatus)
+        +markReleased(paymentID, opts)
+        +refundPayment(paymentID, opts)
+    }
+
+    class PayoutsDAO {
+        +getByRestaurantPartnerID(partnerId)
+        +getByPaymentID(paymentId)
+        +getPendingPayouts()
+        +createPayout(data, opts)
+        +updatePayoutStatus(payoutId,status)
+        +markReleased(payoutId, opts)
+    }
+
+    class PayosServices {
+        +createCheckoutForBooking(bookingID,buyer)
+        +getLinkInfo(orderCode)
+        +verifyWebhook(payload)
+    }
+
+    class PaymentServices {
+        +createPayment(data)
+        +getPaymentsByBooking(bookingID)
+        +refundPayment(paymentID, opts)
+        +createPayout(data)
+        +getPayoutsByRestaurantPartnerID(partnerId)
+    }
+
+    class PayoutsServices {
+        +calculateTotalsForPartner(partnerId)
+        +createAndSendPayout(params)
+        +sendExistingPayout(payout, bankAccountId, initiatedBy)
+    }
+
+    class PaymentController {
+        +createPayosCheckout(req,res)
+        +payosWebhook(req,res)
+        +getPayosStatus(req,res)
+    }
+
+    class PayoutsController {
+        +sendPayout(req,res)
+        +processPending(req,res)
+    }
+
+    class Booking {
+        +bookingID: ID
+        +customerID: ID
+        +totalAmount: Number
+    }
+
+    %% Relationships
+    PaymentController --> PaymentServices : uses
+    PaymentController --> PayosServices : uses
+    PayoutsController --> PayoutsServices : uses
+
+    PaymentServices --> PaymentDAO : uses
+    PaymentServices --> PayoutsDAO : uses
+    PayoutsServices --> PayoutsDAO : uses
+    PayoutsServices --> PayosServices : uses
+
+    PaymentDAO --> Payment
+    PayoutsDAO --> Payout
+
+    Booking "1" -- "*" Payment : has
+    Payment "1" -- "*" Payout : may_create
+
+    %% DTO usage
+    PaymentController ..> Payment : returns
+    PayoutsController ..> Payout : returns
+
+    %% Notes
+    note right of PayoutsServices
+      - Payout creation is recorded in DB first (atomic)
+      - External transfer via PayOS is best-effort
+      - Failed transfers should be retried from pending list
+    end note

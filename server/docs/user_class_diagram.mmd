@@ -1,0 +1,78 @@
+%% User management class diagram
+classDiagram
+    direction TB
+
+    class User {
+        +userID: String
+        +email: String
+        +fullName: String
+        +phone: String
+        +password: String
+        +role: UserRole
+        +status: Boolean
+        +createdAt: Date
+        +updatedAt: Date
+    }
+
+    class Customer
+    class RestaurantPartner
+    User <|-- Customer
+    User <|-- RestaurantPartner
+
+    class UserRole {
+        <<enumeration>>
+        customer
+        owner
+        admin
+    }
+
+    class UserController {
+        +getAllUsers(req, res)
+        +getOwners(req, res)
+        +getCustomers(req, res)
+        +getUserById(req, res)
+        +updateUser(req, res)
+        +deleteUser(req, res)
+        +updateUserStatus(req, res)
+    }
+
+    class UserService {
+        +createOwner(ownerData)
+        +createCustomer(customerData)
+        +updateUser(id, userData)
+        +getAllUsers()
+        +deleteUser(userId)
+        +getAllCustomers()
+        +getAllOwners()
+        +getUserById(userId)
+        +updateUserStatus(userId, status)
+    }
+
+    class UserDAO {
+        +getAllUsers()
+        +getUserById(id)
+        +createOwner(data)
+        +createCustomer(data)
+        +updateStatusUser(id, status)
+        +updateUserInfo(id, updates)
+        +deleteUser(id)
+        +findByEmail(email)
+        +getCustomers()
+        +getOwners()
+    }
+
+    class DBConfig
+    class DTOUtils
+
+    %% relationships
+    UserController --> UserService : uses
+    UserService --> UserDAO : uses
+    UserDAO --> User : persistence
+    DBConfig --> UserDAO : models
+    DTOUtils --> UserDAO : toDTO / toDTOs
+    User --> UserRole
+    Customer -- User
+    RestaurantPartner -- User
+
+    %% notes
+    %% Diagram reflects `server/src/controllers/UserController.js`, `server/src/services/userServices.js`, and `server/src/dao/userDao.js`

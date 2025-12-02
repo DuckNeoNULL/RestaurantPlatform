@@ -1,0 +1,98 @@
+%% Auth subsystem class diagram
+classDiagram
+    direction TB
+
+    class User {
+        +userID: String
+        +email: String
+        +password: String
+        +role: UserRole
+        +createdAt: Date
+    }
+
+    class Customer
+    class RestaurantPartner
+    User <|-- Customer
+    User <|-- RestaurantPartner
+
+    class UserRole {
+        <<enumeration>>
+        customer
+        owner
+        admin
+    }
+
+    class OtpRecord {
+        +email: String
+        +otp: String
+        +expiresAt: Date
+        +createdAt: Date
+    }
+
+    class AuthController {
+        +login(req, res)
+        +logout(req, res)
+        +forgotPassword(req, res)
+        +verifyOtp(req, res)
+        +resetPassword(req, res)
+        +signupOwner(req, res)
+        +signupCustomer(req, res)
+        +getCurrentUser(req, res)
+    }
+
+    class AuthServices {
+        +loginWithEmail(email, password)
+        +logout(req)
+        +forgotPassword(email)
+        +verifyOtp(email, otp)
+        +resetPassword(email, newPassword)
+        +signUpOwner(ownerData)
+        +signUpCustomer(customerData)
+    }
+
+    class UserDAO {
+        +getUserById(id)
+        +findByEmail(email)
+        +createOwner(data)
+        +createCustomer(data)
+        +updateUserInfo(id, updates)
+    }
+
+    class MongoDAO {
+        +getCollection(name)
+        +insertOtp(email, otp)
+        +getOtpByEmail(email)
+        +deleteOtpByEmail(email)
+        +ensureOtpTTLIndex()
+    }
+
+    class JwtAuth {
+        -JWT_SECRET: String
+        +authenticateJWT(req, res, next)
+        +authMiddleware(req, res, next)
+        +ensurePartner(req, res, next)
+        +ensureCustomer(req, res, next)
+    }
+
+    class JwtLib {
+        +sign(payload)
+        +verify(token)
+    }
+
+    %% Relationships / dependencies
+    AuthController --> AuthServices : uses
+    AuthServices --> UserDAO : reads/writes user data
+    AuthServices --> MongoDAO : store/verify OTPs, check blacklist
+    AuthServices --> JwtLib : sign/verify tokens
+
+    JwtAuth --> JwtLib : uses
+    JwtAuth --> MongoDAO : check blacklist collection
+
+    UserDAO --> User
+    MongoDAO --> OtpRecord
+    User --> UserRole
+
+    %% middleware protection (dependency)
+    JwtAuth ..> AuthController : middleware protects routes
+
+    %% notes: this diagram mirrors files in server/src (authController.js, authService.js, userDao.js, mongoDAO.js, jwtToken.js)

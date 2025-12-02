@@ -1,0 +1,253 @@
+/* Payment Page Styles */
+.payment-page {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    padding: 20px 0;
+}
+
+/* Header Card */
+.payment-header-card {
+    background: #993344;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(153, 51, 68, 0.3);
+}
+
+.payment-title {
+    color: #993344;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.payment-subtitle {
+    color: #993344;
+    margin-bottom: 0;
+    font-size: 1.1rem;
+}
+
+/* Countdown Timer */
+.countdown-card {
+    border: 2px solid #993344;
+    border-radius: 15px;
+    background: #993344;
+}
+
+.countdown-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.countdown-icon {
+    font-size: 2rem;
+    color: #993344;
+}
+
+.countdown-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.countdown-label {
+    font-size: 0.9rem;
+    color: #993344;
+    margin-bottom: 5px;
+}
+
+.countdown-time {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #993344;
+    font-family: 'Courier New', monospace;
+}
+
+/* Payment Summary Card */
+.payment-summary-card {
+    background: #993344;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    height: 100%;
+}
+
+.payment-summary-card .card-header {
+    background: #993344;
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border: none;
+}
+
+.payment-summary-card .card-title {
+    color: white !important;
+}
+
+.payment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.payment-item:last-child {
+    border-bottom: none;
+}
+
+.payment-item.total {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: white;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    margin-top: 10px;
+    padding-top: 15px;
+}
+
+.payment-item.deposit {
+    font-weight: 600;
+    color: #ffc107;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.deposit-amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffc107 !important;
+}
+
+/* Payment Methods Card */
+.payment-methods-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    height: 100%;
+}
+
+.payment-methods-card .card-header {
+    background: #993344;
+    border-radius: 15px 15px 0 0;
+    border: none;
+}
+
+.payment-methods-card .card-title {
+    color: #fefaf9;
+}
+
+.payment-method-item {
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.payment-method-item:hover {
+    border-color: #993344;
+    background-color: #fefaf9;
+}
+
+.payment-method-item .form-check-input:checked + .form-check-label {
+    color: #993344;
+    font-weight: 600;
+}
+
+.payment-method-item .form-check-input:checked {
+    background-color: #993344;
+    border-color: #993344;
+}
+
+.payment-method-item .form-check-label {
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Payment Button */
+.btn-payment {
+    background: #993344 !important;
+    color: #fefaf9 !important;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-payment:disabled {
+    background: #6c757d;
+    color: white;
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Payment Actions */
+.payment-actions {
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .countdown-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .countdown-time {
+        font-size: 2rem;
+    }
+    
+    .payment-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .payment-item span:last-child {
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 576px) {
+    .payment-page {
+        padding: 10px 0;
+    }
+    
+    .countdown-time {
+        font-size: 1.8rem;
+    }
+    
+    .btn-payment {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* Animation for countdown warning */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.countdown-card.warning {
+    animation: pulse 1s infinite;
+    border-color: #dc3545;
+}
+
+.countdown-card.warning .countdown-time {
+    color: #dc3545;
+}
+
+.countdown-card.warning .countdown-icon {
+    color: #dc3545;
+}

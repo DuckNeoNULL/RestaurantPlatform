@@ -1,0 +1,382 @@
+/* Payment Success Page Styles */
+.payment-success-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 40px 0;
+}
+
+/* Success Header */
+.success-header {
+    margin-bottom: 40px;
+}
+
+.success-icon {
+    margin-bottom: 20px;
+}
+
+.success-icon i {
+    font-size: 5rem;
+    color: #28a745;
+    animation: bounceIn 0.8s ease-out;
+}
+
+.success-title {
+    color: #28a745;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 2.5rem;
+}
+
+.success-subtitle {
+    color: #6c757d;
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background: #993344;
+    /* color: white; */
+    border-radius: 15px 15px 0 0 !important;
+    padding: 20px 25px;
+}
+
+.card-title {
+    /* color: white; */
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.card-title i {
+    margin-right: 10px;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+/* Payment Details */
+.payment-details-card {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.payment-details-card .card-header {
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.payment-details-card .card-body {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.detail-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item span {
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.detail-item .amount {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #fff3cd;
+}
+
+.status-success {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Booking Summary */
+.booking-summary-card {
+    background: white;
+}
+
+.summary-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-item label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summary-item span {
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.summary-item .total-amount {
+    color: #28a745;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+    margin: 30px 0;
+}
+
+.action-buttons .btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 15px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.action-buttons .btn-primary {
+    background: #993344;
+    border-color: #993344;
+}
+
+.action-buttons .btn-primary:hover {
+    background: #7a2936;
+    border-color: #7a2936;
+}
+
+.action-buttons .btn-success {
+    background: #28a745;
+    border-color: #28a745;
+}
+
+.action-buttons .btn-success:hover {
+    background: #218838;
+    border-color: #218838;
+}
+
+.action-buttons .btn-outline-primary {
+    color: #993344;
+    border-color: #993344;
+}
+
+.action-buttons .btn-outline-primary:hover {
+    background: #993344;
+    border-color: #993344;
+    color: white;
+}
+
+/* Next Steps */
+.next-steps-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+}
+
+.steps-list {
+    padding: 0;
+    margin: 0;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.step-item:last-child {
+    margin-bottom: 0;
+}
+
+.step-item.completed {
+    background: rgba(40, 167, 69, 0.1);
+    border-left: 4px solid #28a745;
+}
+
+.step-item.current {
+    background: rgba(153, 51, 68, 0.1);
+    border-left: 4px solid #993344;
+}
+
+.step-item:not(.completed):not(.current) {
+    background: rgba(108, 117, 125, 0.1);
+    border-left: 4px solid #6c757d;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.step-item.completed .step-icon {
+    background: #28a745;
+    color: white;
+}
+
+.step-item.current .step-icon {
+    background: #993344;
+    color: white;
+}
+
+.step-item:not(.completed):not(.current) .step-icon {
+    background: #6c757d;
+    color: white;
+}
+
+.step-content h6 {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.step-content p {
+    margin-bottom: 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.card:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-success-container {
+        padding: 20px 0;
+    }
+    
+    .success-title {
+        font-size: 2rem;
+    }
+    
+    .success-subtitle {
+        font-size: 1rem;
+    }
+    
+    .success-icon i {
+        font-size: 4rem;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    .action-buttons .btn {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .step-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .step-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .success-title {
+        font-size: 1.5rem;
+    }
+    
+    .success-icon i {
+        font-size: 3rem;
+    }
+    
+    .card-header {
+        padding: 15px 20px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+}

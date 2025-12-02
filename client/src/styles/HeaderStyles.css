@@ -1,0 +1,53 @@
+.header-link {
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+.header-link:hover,
+.header-link:focus,
+.header-link-btn:hover,
+.header-link-btn:focus {
+  text-decoration: none;
+  color: #fff !important;
+  background-color: rgba(246, 243, 243, 0.229) !important;
+
+}
+
+.header-cta {
+  transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+}
+.header-cta:hover,
+.header-cta:focus {
+  filter: brightness(0.96);
+  box-shadow: 0 6px 18px rgba(225, 29, 72, 0.12);
+}
+
+.bg-white .brand-name {
+  color: #e11d48 !important;
+}
+.bg-white .header-link, .bg-white .header-link-btn {
+  color: #374151 !important; 
+  border-color: transparent;
+  background: transparent;
+}
+.bg-white .header-link-btn {
+  border: 1px solid #e11d48 !important;
+}
+
+.bg-white .header-link:hover,
+.bg-white .header-link:focus,
+.bg-white .header-link-btn:hover,
+.bg-white .header-link-btn:focus {
+  background-color: rgba(221, 219, 219, 0.229) !important;
+}
+
+.bg-white .header-cta {
+  background-color: #e11d48;
+  border-color: #e11d48;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(225,29,72,0.12);
+}
+
+.header-link:focus-visible,
+.header-cta:focus-visible {
+  outline: 3px solid rgba(14,165,233,0.12);
+  outline-offset: 2px;
+}

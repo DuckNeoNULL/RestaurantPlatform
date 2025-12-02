@@ -1,0 +1,380 @@
+.listing-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.listing-search {
+    padding: 25px 20px;
+    background: linear-gradient(135deg, #fefaf9 0%, #f8f9fa 100%);
+    border-bottom: 1px solid #e9ecef;
+}
+
+.listing-body {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Sidebar filter */
+.listing-sidebar {
+    width: 280px;
+    background: #fefaf9;
+    border: 1px solid #993344;
+    border-radius: 12px;
+    padding: 20px;
+    height: fit-content;
+}
+
+.listing-sidebar h3,
+.listing-sidebar label {
+    color: #993344;
+}
+
+.listing-sidebar select {
+    margin-bottom: 5px;
+}
+
+.filter-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group:last-child {
+    margin-bottom: 0;
+}
+
+.filter-group h6 {
+    color: #993344;
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 10px 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background: #fefaf9;
+    color: #495057;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    outline: none;
+    border-color: #993344;
+    box-shadow: 0 0 0 2px rgba(153, 51, 68, 0.1);
+}
+
+/* Checkbox styling */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s ease;
+}
+
+.checkbox-item:hover {
+    color: #993344;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #993344;
+    cursor: pointer;
+}
+
+.checkbox-item span {
+    font-size: 14px;
+    color: #495057;
+    user-select: none;
+}
+
+.checkbox-item:hover span {
+    color: #993344;
+}
+
+/* Filter divider */
+.filter-divider {
+    border: none;
+    height: 1px;
+    background-color: #993344;
+    margin: 20px 0;
+    opacity: 0.6;
+}
+
+/* Kết quả danh sách */
+.listing-results {
+    flex: 1;
+}
+
+.restaurant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.restaurant-card {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: row;
+    height: 250px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.restaurant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+
+.restaurant-card img {
+    width: 300px;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.restaurant-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.restaurant-info h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.restaurant-info p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.restaurant-info p strong {
+    color: #993344;
+    font-weight: 600;
+}
+
+.capacity-info {
+    margin: 5px 0;
+}
+
+.capacity-info span {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.btn-detail {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #993344;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    align-self: flex-end;
+    width: fit-content;
+    transition: background-color 0.2s ease;
+}
+
+.btn-detail a {
+    text-decoration: none;
+    color: white;
+}
+
+.btn-detail:hover {
+    background: #a4142c;
+    transform: translateY(-1px);
+}
+
+/* Menu preview styles */
+.menu-preview {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    border-left: 3px solid #993344;
+}
+
+.menu-preview h5 {
+    margin: 0 0 10px 0;
+    color: #993344;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.dishes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.dish-item {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.dish-item:hover {
+    border-color: #993344;
+    background: #fefaf9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(153, 51, 68, 0.1);
+}
+
+.dish-item.selected {
+    border-color: #993344;
+    background: #fefaf9;
+    box-shadow: 0 2px 4px rgba(153, 51, 68, 0.2);
+}
+
+.dish-checkbox {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+
+.dish-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #993344;
+    cursor: pointer;
+}
+
+.dish-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 12px;
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.dish-category {
+    color: #666;
+    font-size: 10px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dish-price {
+    color: #993344;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.more-dishes {
+    text-align: center;
+    margin-top: 8px;
+}
+
+.more-dishes span {
+    color: #666;
+    font-size: 11px;
+    font-style: italic;
+}
+
+/* Selected dishes styles */
+.selected-dishes {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f0f8ff;
+    border-radius: 6px;
+    border-left: 3px solid #28a745;
+}
+
+.selected-dishes h6 {
+    margin: 0 0 8px 0;
+    color: #28a745;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.selected-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.selected-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    background: white;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.selected-item span:first-child {
+    color: #333;
+    font-weight: 500;
+}
+
+.selected-item span:last-child {
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .listing-body {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .listing-sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .restaurant-card {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .restaurant-card img {
+        width: 100%;
+        height: 250px;
+    }
+
+    .restaurant-info {
+        padding: 15px;
+    }
+}

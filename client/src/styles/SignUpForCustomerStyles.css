@@ -1,0 +1,205 @@
+/* Container tổng */
+.signup-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fefaf9;
+  padding: 20px;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Card chính */
+.signup-card {
+  min-height: 600px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1000px;
+  display: grid;
+  grid-template-columns: 55% 45%;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 0 auto;
+  /* căn giữa ngang */
+}
+
+/* Bên trái */
+.signup-left {
+  background-color: #993344;
+  color: #fefaf9;
+  padding: 200px 100px 0px 40px;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+
+.signup-left h1 {
+  font-size: 50px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.signup-left p {
+  font-size: 18px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Bên phải */
+.signup-right {
+  background-color: #fff;
+  padding: 40px;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.signup-right h2 {
+  margin-bottom: 20px;
+  font-size: 32px;
+  text-align: center;
+  color: #331111;
+  font-weight: 700;
+}
+
+.signup-right select {
+  height: 40px;
+  /* Giữ nguyên chiều cao */
+  padding: 0 12px;
+  /* Bỏ padding dọc, chỉ giữ padding ngang */
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 40px;
+  /* Căn giữa chữ theo chiều cao */
+  background-color: #fff;
+  /* Nền trắng */
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+
+/* Form */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.signup-right input {
+  width: 100%;
+  height: 40px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  vertical-align: middle;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Email group */
+.email-group {
+  position: relative;
+}
+
+.email-group input {
+  padding-right: 90px;
+  /* chừa chỗ cho @gmail.com */
+}
+
+.email-group span {
+  position: absolute;
+  right: 12px;
+  color: #aaa;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+
+/* Button */
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #993344;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.btn-submit:hover {
+  background: #a4142c;
+  color: white;
+}
+
+
+/* Links */
+.links {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #331111;
+}
+
+.links a {
+  color: #f6a401;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+/* Validation style */
+.is-invalid {
+  border: 1px solid #d93025 !important;
+  background-image: none !important;
+}
+
+.invalid-feedback {
+  display: block;
+  margin-top: 4px;
+  color: #d93025;
+  font-size: 13px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  /* Sửa từ block thành flex */
+}
+
+.password-wrapper input {
+  width: 100%;
+  height: 40px;
+  padding: 12px;
+  padding-right: 44px;
+  /* chừa chỗ cho icon */
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+  cursor: pointer;
+  color: #777;
+  font-size: 16px;
+  line-height: 1;
+}

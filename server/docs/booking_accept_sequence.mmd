@@ -1,0 +1,125 @@
+%%{init: {
+ "sequence": {
+   "mirrorActors": false,
+   "showSequenceNumbers": false,
+   "useMaxWidth": true,
+   "curve": "linear"
+ }
+}}%%
+sequenceDiagram
+actor User
+participant UI
+participant Controller
+participant Service
+participant Repository
+participant FileStorage
+participant Database
+
+User ->> UI: 1. Partner clicks "Accept" for booking
+activate UI
+UI ->> Controller: 2. POST /bookings/:id/accept
+Controller ->> Service: 3. acceptByPartner(bookingID, partnerID)
+ 
+
+Service ->> Repository: 4. getBookingDetails(bookingID)
+activate Repository
+Repository -->> Service: 5. return booking details
+deactivate Repository
+
+Service ->> Repository: 6. getRestaurantPartnerByHallID(hallID)
+activate Repository
+Repository -->> Service: 7. return partner info
+deactivate Repository
+
+Service ->> Repository: 8. getBookingForUpdate(bookingID)  (SELECT ... FOR UPDATE)
+activate Repository
+Repository -->> Service: 9. return locked booking row (status=PENDING)
+deactivate Repository
+
+Service ->> Repository: 10. updateBookingStatusWithTransaction(bookingID, ACCEPTED)
+activate Repository
+Repository -->> Service: 11. updated booking row (status=ACCEPTED)
+deactivate Repository
+
+alt Contract creation succeeds
+  Service ->> FileStorage: 12. generate contract HTML and write file
+  activate FileStorage
+  FileStorage -->> Service: 13. return file path
+  deactivate FileStorage
+
+  Service ->> Repository: 14. ContractDAO.addContract(contractRecord)
+  activate Repository
+  Repository ->> Database: 15. INSERT contract
+  activate Database
+  Database -->> Repository: 16. 201 Created (contractID)
+  deactivate Database
+  Repository -->> Service: 17. contract DB record with contractID
+  deactivate Repository
+else Contract creation fails (best-effort, logged)
+  Service -->> Service: 18. log warning/error about contract creation
+end
+
+Service -->> Controller: 19. return { success: true, previous: PENDING, status: ACCEPTED, contractID? }
+Controller -->> UI: 20. 200 OK (booking accepted + contract info)
+UI -->> User: 21. 200 OK
+deactivate UI
+
+%% Deposit flow (customer pays deposit)
+User ->> UI: 22. Customer chooses to pay deposit
+activate UI
+UI ->> Controller: 23. POST /bookings/:id/deposit
+Controller ->> Service: 24. depositBooking(bookingID)
+ 
+
+Service ->> Repository: 25. getBookingDetails(bookingID)
+activate Repository
+Repository -->> Service: 26. return booking details
+deactivate Repository
+
+Service ->> Repository: 27. updateBookingStatusWithTransaction(bookingID, DEPOSITED)
+activate Repository
+Repository -->> Service: 28. updated booking row (status=DEPOSITED)
+deactivate Repository
+
+Service -->> Controller: 29. { success: true, status: DEPOSITED }
+Controller -->> UI: 30. 200 OK (deposit confirmed)
+UI -->> User: 31. 200 OK (deposit confirmed)
+deactivate UI
+
+%% Customer signs contract (only allowed after DEPOSITED)
+User ->> UI: 32. Upload signed contract (customer)
+activate UI
+UI ->> Controller: 33. POST /contracts/:id/customer/sign (multipart)
+Controller ->> Service: 34. uploadCustomerSignature(contractID, file)
+ 
+
+Service ->> Repository: 35. getBookingById(bookingID)
+activate Repository
+Repository -->> Service: 36. return booking (status = DEPOSITED or otherwise)
+deactivate Repository
+
+alt Booking is NOT DEPOSITED
+  Service -->> Controller: 37. Error 409: Cannot sign before deposit
+  Controller -->> UI: 38. 409 Conflict
+  UI -->> User: 39. 409 Conflict (cannot sign yet)
+  deactivate UI
+else Booking is DEPOSITED
+  Service ->> FileStorage: 40. save signed file (server/uploads/contracts/signed/...)
+  activate FileStorage
+  FileStorage -->> Service: 41. saved path
+  deactivate FileStorage
+
+  Service ->> Repository: 42. ContractDAO.markSigned(contractID, signedByCustomer)
+  activate Repository
+  Repository ->> Database: 43. UPDATE contract SET signed=1, signer='customer', signedAt=...
+  activate Database
+  Database -->> Repository: 44. 200 OK
+  deactivate Database
+  Repository -->> Service: 45. contract updated
+  deactivate Repository
+
+  Service -->> Controller: 46. 200 OK (signed)
+  Controller -->> UI: 47. 200 OK
+  UI -->> User: 48. 200 OK (contract signed)
+  deactivate UI
+end

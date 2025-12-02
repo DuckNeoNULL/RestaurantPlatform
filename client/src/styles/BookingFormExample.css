@@ -1,0 +1,68 @@
+/* Booking Form Example - Color Overrides Only */
+
+/* Fix card border radius and remove hover effects */
+.card {
+    border-radius: 0.375rem !important;
+}
+
+.card:hover {
+    transform: none !important;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Override header colors */
+.card-header {
+    background: #993344 !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 0.375rem 0.375rem 0 0 !important;
+}
+
+.card-header .card-title {
+    color: white !important;
+}
+
+.card-header .card-title i {
+    color: #fefaf9 !important;
+}
+
+.card-header .text-primary {
+    color: #fefaf9 !important;
+}
+
+/* Override button colors */
+.btn-primary {
+    background-color: #993344 !important;
+    border-color: #993344 !important;
+    color: #fefaf9 !important;
+}
+
+.btn-primary:focus {
+    background-color: #993344 !important;
+    border-color: #993344 !important;
+    color: #fefaf9 !important;
+}
+
+/* Override form control focus colors */
+.form-control:focus {
+    border-color: #993344 !important;
+}
+
+/* Override checkbox colors */
+.form-check-input:checked {
+    background-color: #993344 !important;
+    border-color: #993344 !important;
+}
+
+.form-check-input:focus {
+    border-color: #993344 !important;
+}
+
+/* Override validation colors */
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+    color: #dc3545 !important;
+}

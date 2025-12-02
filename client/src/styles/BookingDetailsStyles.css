@@ -1,0 +1,7 @@
+:root {
+    --primary-color: #D81C45;
+    --primary-bg: #fff;
+    --primary-text: #D81C45;
+    --primary-border: #D81C45;
+    --primary-hover: rgba(216, 28, 69, 0.15);
+}

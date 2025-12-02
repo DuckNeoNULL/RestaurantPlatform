@@ -1,0 +1,25 @@
+/* :root {
+  --theme-primary:#993344;
+  --theme-primary-rgb:153,51,68;
+  --theme-primary-dark:#7a2a2a;
+  --theme-primary-light:#b4545d;
+  --theme-bg-soft:#fef5f6;
+  --theme-border:#e5c9d1;
+}
+
+.theme-bg-soft{background:var(--theme-bg-soft)!important;}
+.theme-text-primary{color:var(--theme-primary)!important;}
+.theme-border{border-color:var(--theme-border)!important;}
+.theme-btn-primary{background:var(--theme-primary)!important;border-color:var(--theme-primary)!important;color:#fefaf9!important;}
+.theme-btn-primary:hover{background:var(--theme-primary-dark)!important;border-color:var(--theme-primary-dark)!important;}
+.theme-badge{background:var(--theme-primary)!important;color:#fff!important;}
+
+.btn-outline-primary.theme-outline-primary{color:var(--theme-primary);border-color:var(--theme-primary);} 
+.btn-outline-primary.theme-outline-primary:hover{background:var(--theme-primary);color:#fff;}
+
+.form-check-input:checked{background-color:var(--theme-primary);border-color:var(--theme-primary);} 
+.form-select:focus,.form-control:focus{box-shadow:0 0 0 .2rem rgba(var(--theme-primary-rgb),.25);border-color:var(--theme-primary);} 
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link{background:var(--theme-primary);} 
+
+.badge-theme{background:var(--theme-primary);} */

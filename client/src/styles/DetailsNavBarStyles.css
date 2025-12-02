@@ -1,0 +1,15 @@
+.nav.nav-underline .nav-link.active {
+    color: #993344 !important;
+    font-weight: 600;
+    border-bottom: 3px solid #993344 !important;
+}
+
+.nav.nav-underline .nav-link {
+    color: #555 !important;
+    font-weight: 500;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.nav.nav-underline .nav-link:hover {
+    color: #993344 !important;
+}

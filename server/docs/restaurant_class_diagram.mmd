@@ -1,0 +1,174 @@
+classDiagram
+  direction TB
+
+  %% Monolith - Controller / Service / Repository / Model / DTO pattern
+
+  %% Models (entities)
+  class Restaurant {
+    +restaurantID: ID
+    +name: String
+    +partnerID: ID
+    +status: Boolean
+    +createdAt: Date
+    +updatedAt: Date
+  }
+
+  class Hall {
+    +hallID: ID
+    +restaurantID: ID
+    +name: String
+    +maxTable: Number
+    +price: Number
+  }
+
+  class Menu {
+    +menuID: ID
+    +restaurantID: ID
+    +name: String
+    +price: Number
+  }
+
+  class Dish {
+    +dishID: ID
+    +menuID: ID
+    +name: String
+    +price: Number
+  }
+
+  class ServiceModel {
+    +serviceID: ID
+    +restaurantID: ID
+    +name: String
+    +price: Number
+  }
+
+  class Promotion {
+    +promotionID: ID
+    +restaurantID: ID
+    +title: String
+    +discountType: String
+  }
+
+  class RestaurantImage {
+    +imageID: ID
+    +restaurantID: ID
+    +url: String
+    +type: String
+  }
+
+  class Address {
+    +addressID: ID
+    +line1: String
+    +city: String
+    +state: String
+    +postalCode: String
+    +fullAddress(): String
+  }
+
+  %% Repository (data access) classes
+  class RestaurantRepository {
+    +findAll(filters)
+    +findById(id, options)
+    +create(data)
+    +update(id,patch)
+    +delete(id)
+  }
+
+  class HallRepository {
+    +findByRestaurantId(restaurantId)
+    +findById(id)
+    +create(data)
+    +isAvailable(hallId,range)
+  }
+
+  class MenuRepository {
+    +findByRestaurantId(restaurantId)
+    +findById(id)
+  }
+
+  class DishRepository {
+    +findByMenuId(menuId)
+    +findById(id)
+  }
+
+  class ServiceRepository {
+    +findByRestaurantId(restaurantId)
+    +findAll()
+  }
+
+  class PromotionRepository {
+    +findByRestaurantId(restaurantId)
+  }
+
+  class ImageRepository {
+    +findByRestaurantId(restaurantId)
+    +add(image)
+  }
+
+  %% Service layer
+  class RestaurantService {
+    +list(filters)
+    +getSummary(id)
+    +getFull(id, include[])
+    +create(payload: RestaurantRequestDTO)
+    +update(id, payload: RestaurantRequestDTO)
+  }
+
+  %% Controller (REST endpoints)
+  class RestaurantController {
+    +GET /api/restaurants
+    +GET /api/restaurants/:id/summary
+    +GET /api/restaurants/:id/full
+    +POST /api/restaurants
+    +PUT /api/restaurants/:id
+  }
+
+  %% DTOs
+  class RestaurantRequestDTO {
+    +name: String
+    +address: Address
+    +menus: Menu[]
+    +halls: Hall[]
+  }
+
+  class RestaurantResponseDTO {
+    +restaurant: Restaurant
+    +menus: Menu[]
+    +halls: Hall[]
+    +services: ServiceModel[]
+    +promotions: Promotion[]
+    +images: RestaurantImage[]
+  }
+
+  %% Layer relationships (Controller -> Service -> Repository -> Model)
+  RestaurantController --> RestaurantService : uses
+  RestaurantService --> RestaurantRepository : uses
+  RestaurantService --> HallRepository
+  RestaurantService --> MenuRepository
+  RestaurantService --> DishRepository
+  RestaurantService --> ServiceRepository
+  RestaurantService --> PromotionRepository
+  RestaurantService --> ImageRepository
+
+  RestaurantRepository --> Restaurant : persists
+  HallRepository --> Hall
+  MenuRepository --> Menu
+  DishRepository --> Dish
+  ServiceRepository --> ServiceModel
+  PromotionRepository --> Promotion
+  ImageRepository --> RestaurantImage
+
+  %% Domain associations & multiplicity
+  Restaurant "1" -- "*" Menu : contains
+  Menu "1" -- "*" Dish : contains
+  Restaurant "1" -- "*" Hall : has
+  Restaurant "1" -- "*" ServiceModel : offers
+  Restaurant "1" -- "*" Promotion : runs
+  Restaurant "1" -- "*" RestaurantImage : images
+  Restaurant "1" -- "1" Address : located_at
+
+  %% DTO usage
+  RestaurantController ..> RestaurantRequestDTO : consumes
+  RestaurantController ..> RestaurantResponseDTO : returns
+
+  %% Notes: keep diagram focused on public API and data responsibilities (Controller/Service/Repository/Model/DTO)

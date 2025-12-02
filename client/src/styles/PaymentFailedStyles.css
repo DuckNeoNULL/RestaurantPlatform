@@ -1,0 +1,362 @@
+/* Payment Failed Page Styles */
+.payment-failed-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 40px 0;
+}
+
+/* Failed Header */
+.failed-header {
+    margin-bottom: 40px;
+}
+
+.failed-icon {
+    margin-bottom: 20px;
+}
+
+.failed-icon i {
+    font-size: 5rem;
+    color: #dc3545;
+    animation: shake 0.8s ease-out;
+}
+
+.failed-title {
+    color: #dc3545;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 2.5rem;
+}
+
+.failed-subtitle {
+    color: #6c757d;
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background: #dc3545;
+    /* color: white; */
+    border-radius: 15px 15px 0 0 !important;
+    padding: 20px 25px;
+}
+
+.card-title {
+    /* color: white; */
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.card-title i {
+    margin-right: 10px;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+/* Error Details */
+.error-details-card {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    color: white;
+}
+
+.error-details-card .card-header {
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.error-details-card .card-body {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.detail-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-item span {
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.detail-item .amount {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #fff3cd;
+}
+
+.status-failed {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.error-reason {
+    color: #ffc107 !important;
+    font-weight: 600;
+}
+
+/* Causes Card */
+.causes-card {
+    background: white;
+}
+
+.causes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.causes-list li {
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.causes-list li:last-child {
+    border-bottom: none;
+}
+
+.causes-list li:hover {
+    background-color: #f8f9fa;
+    padding-left: 10px;
+}
+
+.causes-list li i {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Help Card */
+.help-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+}
+
+.help-item {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.help-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.help-item h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-item p {
+    margin-bottom: 0;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Action Buttons */
+.action-buttons {
+    margin: 30px 0;
+}
+
+.action-buttons .btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 15px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.action-buttons .btn-primary {
+    background: #dc3545;
+    border-color: #dc3545;
+}
+
+.action-buttons .btn-primary:hover {
+    background: #c82333;
+    border-color: #c82333;
+}
+
+.action-buttons .btn-outline-primary {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.action-buttons .btn-outline-primary:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.action-buttons .btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.action-buttons .btn-outline-secondary:hover {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+/* Animations */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.card:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 10px;
+    border: none;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-failed-container {
+        padding: 20px 0;
+    }
+    
+    .failed-title {
+        font-size: 2rem;
+    }
+    
+    .failed-subtitle {
+        font-size: 1rem;
+    }
+    
+    .failed-icon i {
+        font-size: 4rem;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    .action-buttons .btn {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .causes-list li {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px 0;
+    }
+    
+    .causes-list li i {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .failed-title {
+        font-size: 1.5rem;
+    }
+    
+    .failed-icon i {
+        font-size: 3rem;
+    }
+    
+    .card-header {
+        padding: 15px 20px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .help-item {
+        padding: 15px;
+    }
+}

@@ -1,0 +1,10 @@
+/* Tắt icon dấu chấm than của Bootstrap */
+.form-control.is-invalid {
+  background-image: none !important;
+  padding-right: 0 !important;
+}
+
+/* Tắt cả icon khi focus */
+.form-control.is-invalid:focus {
+  background-image: none !important;
+}

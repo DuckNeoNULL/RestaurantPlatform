@@ -1,0 +1,114 @@
+---
+config:
+  layout: elk
+---
+classDiagram
+direction TB
+    class Booking {
+	    +bookingID: ID
+	    +customerID: ID
+	    +hallID: ID
+	    +eventDate: Date
+	    +startTime: String
+	    +endTime: String
+	    +tableCount: Number
+	    +totalAmount: Number
+	    +status: BookingStatus
+	    +specialRequest: String
+	    +createdAt: Date
+	    +updatedAt: Date
+	    +toDTO() : BookingResponseDTO
+    }
+    class Hall {
+	    +hallID: ID
+	    +restaurantID: ID
+	    +name: String
+    }
+    class Customer {
+	    +customerID: ID
+	    +fullName: String
+	    +email: String
+	    +phone: String
+    }
+    class Restaurant {
+	    +restaurantID: ID
+	    +name: String
+    }
+    class BookingStatus {
+	    PENDING
+	    ACCEPTED
+	    REJECTED
+	    CONFIRMED
+	    DEPOSITED
+	    EXPIRED
+	    CANCELLED
+	    COMPLETED
+    }
+    class BookingDAO {
+	    +createBooking(bookingData, opts)
+	    +getBookingById(bookingID)
+	    +getBookingDetails(bookingID)
+	    +findByHallAndTime(hallID, eventDate, startTime, endTime)
+	    +updateBooking(bookingID, updates)
+	    +updateBookingStatusWithTransaction(bookingID, newStatus, transaction)
+	    +expireByIds(ids,setChecked)
+	    +bulkExpireConfirmedOlderThanBatch(cutoff, batchSize)
+    }
+    class BookingService {
+	    +createBooking(data)
+	    +getBookingById(id)
+	    +updateBooking(id, data)
+	    +deleteBooking(id)
+	    +changeStatus(id, status, opts)
+	    +acceptByPartner(id, partnerId)
+	    +rejectByPartner(id, partnerId, reason)
+	    +confirmBooking(id)
+	    +depositBooking(id)
+	    +completeBooking(id)
+    }
+    class BookingPricing {
+	    +calculateTotals(basePrice, extras)
+    }
+    class BookingValidators {
+	    +validateCreateData(data)
+	    +checkHallAvailability(hallID, eventDate, startTime, endTime)
+    }
+    class BookingNotificationService {
+	    +notifyByStatus(booking, status, reason)
+    }
+    class CronServices {
+	    +setupExpirationChecker(days)
+    }
+    class ContractServices {
+	    +createContractFromBooking(bookingID)
+    }
+    class BookingController {
+	    +createBooking(req,res)
+	    +getBookingById(req,res)
+	    +getBookingsByCustomerId(req,res)
+	    +getBookingsByRestaurantId(req,res)
+	    +updateBooking(req,res)
+	    +deleteBooking(req,res)
+	    +updateBookingStatus(req,res)
+	    +acceptByPartner(req,res)
+	    +rejectByPartner(req,res)
+	    +confirmBooking(req,res)
+	    +markAsDeposited(req,res)
+	    +completeBooking(req,res)
+    }
+
+	<<enumeration>> BookingStatus
+
+    BookingController --> BookingService : uses
+    BookingService --> BookingDAO : uses
+    BookingService --> BookingPricing : uses
+    BookingService --> BookingValidators : uses
+    BookingService --> BookingNotificationService : uses
+    BookingService --> ContractServices : may create
+    BookingDAO --> Booking : persistence
+    Booking --> Hall
+    Booking --> Customer
+    Hall "*" -- "1" Restaurant : belongs_to
+    BookingNotificationService ..> BookingDAO : loads booking details
+    CronServices --> BookingDAO
+    BookingStatus -- BookingController

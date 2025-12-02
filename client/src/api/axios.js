@@ -7,4 +7,7 @@ const instance = axios.create({
   },
 });
 
+// Use cookies (HttpOnly) for auth
+instance.defaults.withCredentials = true;
+
 export default instance;

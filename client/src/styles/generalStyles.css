@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header,
+main,
+footer {
+    display: block;
+    padding: 40px 0;
+}
+
+body {
+    font-family: "Noto Sans", sans-serif;
+}
+

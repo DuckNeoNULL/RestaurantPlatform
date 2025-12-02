@@ -1,38 +1,127 @@
-.App {
-  text-align: center;
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f8f8f8;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.signup-card {
+  display: flex;
+  width: 900px;       /* chiều ngang dài ra */
+  min-height: 500px;  /* thấp hơn chiều ngang, tạo hình chữ nhật */
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.signup-left {
+  flex: 1;
+  background: #f6a401;
+  color: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  padding: 30px;
 }
 
-.App-link {
-  color: #61dafb;
+.signup-right {
+  flex: 2;
+  padding: 40px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.signup-right h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Cho tất cả input và select có chung style */
+.form-group input,
+.form-group select {
+  width: 100%;          /* chiếm hết chiều ngang khối chứa */
+  padding: 10px;        /* đệm trong cho đều */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box; /* tránh bị lệch width do padding */
+}
+
+/* Nhất quán chiều cao */
+.form-group select {
+  height: 40px;  /* bằng với input */
+  background-color: #fff;
+}
+
+.email-group {
+  position: relative;
+}
+
+.email-group input {
+  padding-right: 80px;
+}
+
+.email-group span {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* Nút đăng ký căn giữa */
+.btn-submit {
+  display: block;
+  margin: 20px auto 0; /* căn giữa */
+  background: #f6a401;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-submit:hover {
+  background: #e59400;
+}
+
+.links {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.links a {
+  color: #f6a401;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* chừa chỗ cho icon */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
 }

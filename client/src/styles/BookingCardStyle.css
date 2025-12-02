@@ -1,0 +1,11 @@
+.booking-card {
+  width: 50%;              /* ✅ chỉ chiếm nửa màn hình */
+  margin-left: 0;          /* ✅ canh trái */
+  margin-right: auto;      /* ✅ phần trống bên phải */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+.booking-card:hover {
+  transform: translateY(-4px);
+}
